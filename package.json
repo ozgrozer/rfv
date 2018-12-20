@@ -1,0 +1,40 @@
+{
+  "name": "rfv",
+  "version": "0.0.2",
+  "description": "React Form Validator",
+  "main": "./build/Rfv.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ozgrozer/rfv.git"
+  },
+  "author": {
+    "name": "Ozgur Ozer",
+    "email": "ozgr@live.com",
+    "url": "https://github.com/ozgrozer"
+  },
+  "keywords": [
+    "react",
+    "form-validation",
+    "form-validatior"
+  ],
+  "scripts": {
+    "start": "parcel ./example/index.html --out-dir ./dist --public-url / --port 1144",
+    "build": "babel --plugins transform-react-jsx ./src/Rfv.jsx > ./build/Rfv.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "react": "16.7.0-alpha.2",
+    "react-dom": "16.7.0-alpha.2",
+    "validator": "^10.9.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "parcel-bundler": "^1.7.1"
+  }
+}
