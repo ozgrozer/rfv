@@ -7,8 +7,13 @@ const validations = {
   username: [
     {
       rule: 'isLength',
+      args: { min: 1 },
+      invalidFeedback: 'Please provide a username'
+    },
+    {
+      rule: 'isLength',
       args: { min: 4, max: 32 },
-      invalidFeedback: 'Please provide a username (min: 4, max: 32)'
+      invalidFeedback: 'Username must be minimum 4, maximum 32 characters'
     }
   ],
   yesOrNo: [
