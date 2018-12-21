@@ -103,6 +103,11 @@ var Provider = function Provider(props) {
       items = _useState2[0],
       setItems = _useState2[1];
 
+  var _useState3 = (0, _react.useState)(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      formIsValidating = _useState4[0],
+      setFormIsValidating = _useState4[1];
+
   var formValidate = function formValidate() {
     var howManyItemsValidated = 0;
     var howManyItemsAreGonnaValidate = 0;
@@ -142,6 +147,8 @@ var Provider = function Provider(props) {
   var formOnSubmit = function formOnSubmit(e) {
     e.preventDefault();
 
+    setFormIsValidating(true);
+
     if (formValidate()) {
       console.log('form is valid');
     } else {
@@ -156,12 +163,15 @@ var Provider = function Provider(props) {
     };
 
     setItems(items);
+
+    if (formIsValidating) formValidate();
   };
 
   var itemOnChange = function itemOnChange(props, e) {
     var item = _extends({}, props, {
       value: e.target.value
     });
+
     itemInitialize(item);
   };
 

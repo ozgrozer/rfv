@@ -67,6 +67,7 @@ const Context = React.createContext()
 
 const Provider = (props) => {
   const [items, setItems] = useState({})
+  const [formIsValidating, setFormIsValidating] = useState(false)
 
   const formValidate = () => {
     let howManyItemsValidated = 0
@@ -107,6 +108,8 @@ const Provider = (props) => {
   const formOnSubmit = (e) => {
     e.preventDefault()
 
+    setFormIsValidating(true)
+
     if (formValidate()) {
       console.log('form is valid')
     } else {
@@ -121,6 +124,8 @@ const Provider = (props) => {
     }
 
     setItems(items)
+
+    if (formIsValidating) formValidate()
   }
 
   const itemOnChange = (props, e) => {
@@ -128,6 +133,7 @@ const Provider = (props) => {
       ...props,
       value: e.target.value
     }
+
     itemInitialize(item)
   }
 

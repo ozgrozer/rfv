@@ -42,11 +42,21 @@ const App = () => {
 
   return (
     <Form
-      postUrl='https://runkit.io/ozgrozer/recassfov-backend-demo/branches/master/signup'>
+      action='https://runkit.io/ozgrozer/recassfov-backend-demo/branches/master/signup'>
       <h2>Demo Form</h2>
 
       <div>- Type "john" into username to see backend error.</div>
       <div>- Watch console.</div>
+
+      <br />
+
+      <div>
+        <Input
+          type='text'
+          name='username'
+          placeholder='Username'
+          validations={validations.username} />
+      </div>
 
       <br />
 
@@ -58,16 +68,6 @@ const App = () => {
           <option value='yes'>yes</option>
           <option value='no'>no</option>
         </Select>
-      </div>
-
-      <br />
-
-      <div>
-        <Input
-          type='text'
-          name='username'
-          placeholder='Username'
-          validations={validations.username} />
       </div>
 
       <br />
