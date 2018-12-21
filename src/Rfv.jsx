@@ -3,12 +3,12 @@ import validator from 'validator'
 import axios from 'axios'
 
 const Form = (props) => {
-  const { onSubmit, postOptions, store, ...htmlProps } = props
+  const { preSubmit, onSubmit, postSubmit, postOptions, store, ...htmlProps } = props
 
   return (
     <form
       {...htmlProps}
-      onSubmit={(e) => store.formOnSubmit({ onSubmit, postOptions }, e)}>
+      onSubmit={(e) => store.formOnSubmit({ preSubmit, onSubmit, postSubmit, postOptions }, e)}>
       {props.children}
     </form>
   )
@@ -114,28 +114,49 @@ const Provider = (props) => {
   const formOnSubmit = (opts, e) => {
     e.preventDefault()
 
+    opts.preSubmit({ items })
+
     setFormIsValidating(true)
 
     const _formValidate = formValidate()
     opts.onSubmit({ items, isFormValid: _formValidate })
 
     if (_formValidate && opts.postOptions) {
-      opts.postOptions.data = {}
-      Object.keys(items).map((key) => {
-        const item = items[key]
-        opts.postOptions.data[key] = item.value
-      })
+      opts.postOptions.data = itemsAndValues()
 
       axios({...opts.postOptions})
         .then((res) => {
           const validations = res.data.validations || {}
-          console.log(validations)
-          console.log(res.data)
+
+          let isFormValid = true
+          if (Object.keys(validations).length) {
+            isFormValid = false
+
+            Object.keys(validations).map((key) => {
+              items[key].invalidFeedback = validations[key]
+              items[key].className = ` is-invalid`
+            })
+
+            setItems(items)
+          }
+
+          opts.postSubmit({ items, isFormValid, data: res.data })
         })
         .catch((err) => {
           console.log(err)
         })
     }
+  }
+
+  const itemsAndValues = () => {
+    const data = {}
+
+    Object.keys(items).map((key) => {
+      const item = items[key]
+      data[key] = item.value
+    })
+
+    return data
   }
 
   const itemInitialize = (item) => {

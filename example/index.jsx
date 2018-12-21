@@ -33,18 +33,28 @@ const validations = {
 }
 
 const App = () => {
+  const preSubmit = (res) => {
+    console.log('preSubmit', res)
+  }
+
   const onSubmit = (res) => {
-    console.log(res)
+    console.log('onSubmit', res)
+  }
+
+  const postSubmit = (res) => {
+    console.log('postSubmit', res)
   }
 
   const postOptions = {
-    url: 'https://runkit.io/ozgrozer/rfv-demo-backend/branches/master/signup',
-    method: 'post'
+    method: 'post',
+    url: 'https://rfv-demo-backend-kb3ppjk4g0ol.runkit.sh/signup'
   }
 
   return (
     <Form
+      preSubmit={preSubmit}
       onSubmit={onSubmit}
+      postSubmit={postSubmit}
       postOptions={postOptions}>
       <h2>Demo Form</h2>
 
