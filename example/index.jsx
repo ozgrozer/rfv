@@ -40,8 +40,13 @@ const App = () => {
     }, 3000)
   }, [])
 
+  const onSubmit = (res) => {
+    console.log(res)
+  }
+
   return (
     <Form
+      onSubmit={onSubmit}
       action='https://runkit.io/ozgrozer/recassfov-backend-demo/branches/master/signup'>
       <h2>Demo Form</h2>
 

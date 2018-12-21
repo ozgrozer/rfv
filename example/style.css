@@ -5,6 +5,6 @@
   display: none;
   color: #dc3545;
 }
-.is-invalid~.invalid-feedback {
+.is-invalid ~ .invalid-feedback {
   display: block;
 }

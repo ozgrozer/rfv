@@ -2,12 +2,12 @@ import React, { Fragment, useEffect, useState } from 'react'
 import validator from 'validator'
 
 const Form = (props) => {
-  const { store, postUrl, className, onChange, ...htmlProps } = props
+  const { onSubmit, store, ...htmlProps } = props
 
   return (
     <form
       {...htmlProps}
-      onSubmit={store.formOnSubmit}>
+      onSubmit={(e) => store.formOnSubmit({ onSubmit }, e)}>
       {props.children}
     </form>
   )
@@ -22,6 +22,7 @@ const Item = (props) => {
 
   const thisItem = store.state.items[props.name] || {
     value: '',
+    className: '',
     invalidFeedback: ''
   }
 
@@ -31,6 +32,7 @@ const Item = (props) => {
       <input
         {...htmlProps}
         value={thisItem.value}
+        className={`${className}${thisItem.className}`}
         onChange={e => store.itemOnChange(props, e)} />
     )
   } else if (opts.element === 'textarea') {
@@ -38,6 +40,7 @@ const Item = (props) => {
       <textarea
         {...htmlProps}
         value={thisItem.value}
+        className={`${className}${thisItem.className}`}
         onChange={e => store.itemOnChange(props, e)} />
     )
   } else if (opts.element === 'select') {
@@ -45,6 +48,7 @@ const Item = (props) => {
       <select
         {...htmlProps}
         value={thisItem.value}
+        className={`${className}${thisItem.className}`}
         onChange={e => store.itemOnChange(props, e)}>
         {props.children}
       </select>
@@ -54,7 +58,7 @@ const Item = (props) => {
   return (
     <Fragment>
       {formElement}
-      {thisItem.invalidFeedback ? (<div>{thisItem.invalidFeedback}</div>) : null}
+      {thisItem.invalidFeedback ? (<div className='invalid-feedback'>{thisItem.invalidFeedback}</div>) : null}
     </Fragment>
   )
 }
@@ -95,26 +99,24 @@ const Provider = (props) => {
         }
       })
 
-      item.invalidFeedback = unvalidatedItems.length ? unvalidatedItems[0].invalidFeedback : ''
+      if (unvalidatedItems.length) {
+        item.invalidFeedback = unvalidatedItems[0].invalidFeedback
+        item.className = ' is-invalid'
+      }
     })
 
     setItems(items)
 
-    if (howManyItemsAreGonnaValidate === howManyItemsValidated) {
-      return true
-    }
+    return howManyItemsAreGonnaValidate === howManyItemsValidated || false
   }
 
-  const formOnSubmit = (e) => {
+  const formOnSubmit = (opts, e) => {
     e.preventDefault()
 
     setFormIsValidating(true)
 
-    if (formValidate()) {
-      console.log('form is valid')
-    } else {
-      console.log('form is not valid')
-    }
+    const _formValidate = formValidate()
+    opts.onSubmit({ items, isFormValid: _formValidate })
   }
 
   const itemInitialize = (item) => {

@@ -17,16 +17,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var Form = function Form(props) {
-  var store = props.store,
-      postUrl = props.postUrl,
-      className = props.className,
-      onChange = props.onChange,
-      htmlProps = _objectWithoutProperties(props, ['store', 'postUrl', 'className', 'onChange']);
+  var _onSubmit = props.onSubmit,
+      store = props.store,
+      htmlProps = _objectWithoutProperties(props, ['onSubmit', 'store']);
 
   return _react2.default.createElement(
     'form',
     _extends({}, htmlProps, {
-      onSubmit: store.formOnSubmit }),
+      onSubmit: function onSubmit(e) {
+        return store.formOnSubmit({ onSubmit: _onSubmit }, e);
+      } }),
     props.children
   );
 };
@@ -45,6 +45,7 @@ var Item = function Item(props) {
 
   var thisItem = store.state.items[props.name] || {
     value: '',
+    className: '',
     invalidFeedback: ''
   };
 
@@ -52,12 +53,14 @@ var Item = function Item(props) {
   if (opts.element === 'input') {
     formElement = _react2.default.createElement('input', _extends({}, htmlProps, {
       value: thisItem.value,
+      className: '' + className + thisItem.className,
       onChange: function onChange(e) {
         return store.itemOnChange(props, e);
       } }));
   } else if (opts.element === 'textarea') {
     formElement = _react2.default.createElement('textarea', _extends({}, htmlProps, {
       value: thisItem.value,
+      className: '' + className + thisItem.className,
       onChange: function onChange(e) {
         return store.itemOnChange(props, e);
       } }));
@@ -66,6 +69,7 @@ var Item = function Item(props) {
       'select',
       _extends({}, htmlProps, {
         value: thisItem.value,
+        className: '' + className + thisItem.className,
         onChange: function onChange(e) {
           return store.itemOnChange(props, e);
         } }),
@@ -79,7 +83,7 @@ var Item = function Item(props) {
     formElement,
     thisItem.invalidFeedback ? _react2.default.createElement(
       'div',
-      null,
+      { className: 'invalid-feedback' },
       thisItem.invalidFeedback
     ) : null
   );
@@ -134,26 +138,24 @@ var Provider = function Provider(props) {
         }
       });
 
-      item.invalidFeedback = unvalidatedItems.length ? unvalidatedItems[0].invalidFeedback : '';
+      if (unvalidatedItems.length) {
+        item.invalidFeedback = unvalidatedItems[0].invalidFeedback;
+        item.className = ' is-invalid';
+      }
     });
 
     setItems(items);
 
-    if (howManyItemsAreGonnaValidate === howManyItemsValidated) {
-      return true;
-    }
+    return howManyItemsAreGonnaValidate === howManyItemsValidated || false;
   };
 
-  var formOnSubmit = function formOnSubmit(e) {
+  var formOnSubmit = function formOnSubmit(opts, e) {
     e.preventDefault();
 
     setFormIsValidating(true);
 
-    if (formValidate()) {
-      console.log('form is valid');
-    } else {
-      console.log('form is not valid');
-    }
+    var _formValidate = formValidate();
+    opts.onSubmit({ items: items, isFormValid: _formValidate });
   };
 
   var itemInitialize = function itemInitialize(item) {
