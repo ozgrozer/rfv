@@ -43,7 +43,10 @@ var Item = function Item(props) {
     store.itemInitialize(props);
   }, [props.value]);
 
-  var thisItem = store.state.items[props.name] || { value: '' };
+  var thisItem = store.state.items[props.name] || {
+    value: '',
+    invalidFeedback: ''
+  };
 
   var formElement = void 0;
   if (opts.element === 'input') {
@@ -55,13 +58,17 @@ var Item = function Item(props) {
   } else if (opts.element === 'textarea') {
     formElement = _react2.default.createElement('textarea', _extends({}, htmlProps, {
       value: thisItem.value,
-      onChange: store.itemOnChange }));
+      onChange: function onChange(e) {
+        return store.itemOnChange(props, e);
+      } }));
   } else if (opts.element === 'select') {
     formElement = _react2.default.createElement(
       'select',
       _extends({}, htmlProps, {
         value: thisItem.value,
-        onChange: store.itemOnChange }),
+        onChange: function onChange(e) {
+          return store.itemOnChange(props, e);
+        } }),
       props.children
     );
   }
@@ -69,7 +76,12 @@ var Item = function Item(props) {
   return _react2.default.createElement(
     _react.Fragment,
     null,
-    formElement
+    formElement,
+    thisItem.invalidFeedback ? _react2.default.createElement(
+      'div',
+      null,
+      thisItem.invalidFeedback
+    ) : null
   );
 };
 
@@ -92,28 +104,49 @@ var Provider = function Provider(props) {
       setItems = _useState2[1];
 
   var formValidate = function formValidate() {
-    console.log('formValidate', items);
-    var validated = 0;
-    var howManyOfFormItemsAreGonnaValidate = 0;
+    var howManyItemsValidated = 0;
+    var howManyItemsAreGonnaValidate = 0;
 
     Object.keys(items).map(function (key) {
       var item = items[key];
+
       item.validations.map(function (itemValidation, i) {
-        howManyOfFormItemsAreGonnaValidate++;
+        howManyItemsAreGonnaValidate++;
 
         var validate = _validator2.default[itemValidation.rule](item.value, itemValidation.args);
         if (validate) {
-          validated++;
+          itemValidation.validated = true;
+          howManyItemsValidated++;
+        } else {
+          itemValidation.validated = false;
         }
       });
+
+      var unvalidatedItems = [];
+      item.validations.map(function (itemValidation, i) {
+        if (!itemValidation.validated) {
+          unvalidatedItems.push(itemValidation);
+        }
+      });
+
+      item.invalidFeedback = unvalidatedItems.length ? unvalidatedItems[0].invalidFeedback : '';
     });
 
-    console.log(howManyOfFormItemsAreGonnaValidate, validated);
+    setItems(items);
+
+    if (howManyItemsAreGonnaValidate === howManyItemsValidated) {
+      return true;
+    }
   };
 
   var formOnSubmit = function formOnSubmit(e) {
     e.preventDefault();
-    formValidate();
+
+    if (formValidate()) {
+      console.log('form is valid');
+    } else {
+      console.log('form is not valid');
+    }
   };
 
   var itemInitialize = function itemInitialize(item) {

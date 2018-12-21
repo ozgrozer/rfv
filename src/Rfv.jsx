@@ -20,7 +20,10 @@ const Item = (props) => {
     store.itemInitialize(props)
   }, [props.value])
 
-  const thisItem = store.state.items[props.name] || { value: '' }
+  const thisItem = store.state.items[props.name] || {
+    value: '',
+    invalidFeedback: ''
+  }
 
   let formElement
   if (opts.element === 'input') {
@@ -35,14 +38,14 @@ const Item = (props) => {
       <textarea
         {...htmlProps}
         value={thisItem.value}
-        onChange={store.itemOnChange} />
+        onChange={e => store.itemOnChange(props, e)} />
     )
   } else if (opts.element === 'select') {
     formElement = (
       <select
         {...htmlProps}
         value={thisItem.value}
-        onChange={store.itemOnChange}>
+        onChange={e => store.itemOnChange(props, e)}>
         {props.children}
       </select>
     )
@@ -51,6 +54,7 @@ const Item = (props) => {
   return (
     <Fragment>
       {formElement}
+      {thisItem.invalidFeedback ? (<div>{thisItem.invalidFeedback}</div>) : null}
     </Fragment>
   )
 }
@@ -65,28 +69,49 @@ const Provider = (props) => {
   const [items, setItems] = useState({})
 
   const formValidate = () => {
-    console.log('formValidate', items)
-    let validated = 0
-    let howManyOfFormItemsAreGonnaValidate = 0
+    let howManyItemsValidated = 0
+    let howManyItemsAreGonnaValidate = 0
 
     Object.keys(items).map((key) => {
       const item = items[key]
+
       item.validations.map((itemValidation, i) => {
-        howManyOfFormItemsAreGonnaValidate++
+        howManyItemsAreGonnaValidate++
 
         const validate = validator[itemValidation.rule](item.value, itemValidation.args)
         if (validate) {
-          validated++
+          itemValidation.validated = true
+          howManyItemsValidated++
+        } else {
+          itemValidation.validated = false
         }
       })
+
+      const unvalidatedItems = []
+      item.validations.map((itemValidation, i) => {
+        if (!itemValidation.validated) {
+          unvalidatedItems.push(itemValidation)
+        }
+      })
+
+      item.invalidFeedback = unvalidatedItems.length ? unvalidatedItems[0].invalidFeedback : ''
     })
 
-    console.log(howManyOfFormItemsAreGonnaValidate, validated)
+    setItems(items)
+
+    if (howManyItemsAreGonnaValidate === howManyItemsValidated) {
+      return true
+    }
   }
 
   const formOnSubmit = (e) => {
     e.preventDefault()
-    formValidate()
+
+    if (formValidate()) {
+      console.log('form is valid')
+    } else {
+      console.log('form is not valid')
+    }
   }
 
   const itemInitialize = (item) => {
