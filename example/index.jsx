@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 
 import { Form, Input, Select, Textarea } from './../src/Rfv'
@@ -33,25 +33,22 @@ const validations = {
 }
 
 const App = () => {
-  const [message, setMessage] = useState('')
-  useEffect(() => {
-    setTimeout(() => {
-      setMessage('3 seconds past')
-    }, 3000)
-  }, [])
-
   const onSubmit = (res) => {
     console.log(res)
+  }
+
+  const postOptions = {
+    url: 'https://runkit.io/ozgrozer/rfv-demo-backend/branches/master/signup',
+    method: 'post'
   }
 
   return (
     <Form
       onSubmit={onSubmit}
-      action='https://runkit.io/ozgrozer/recassfov-backend-demo/branches/master/signup'>
+      postOptions={postOptions}>
       <h2>Demo Form</h2>
 
-      <div>- Type "john" into username to see backend error.</div>
-      <div>- Watch console.</div>
+      <div>Type "john" into username to see the backend error.</div>
 
       <br />
 
@@ -80,7 +77,6 @@ const App = () => {
       <div>
         <Textarea
           name='message'
-          value={message}
           placeholder='Message'
           validations={validations.message} />
       </div>

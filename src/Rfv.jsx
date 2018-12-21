@@ -1,13 +1,14 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import validator from 'validator'
+import axios from 'axios'
 
 const Form = (props) => {
-  const { onSubmit, store, ...htmlProps } = props
+  const { onSubmit, postOptions, store, ...htmlProps } = props
 
   return (
     <form
       {...htmlProps}
-      onSubmit={(e) => store.formOnSubmit({ onSubmit }, e)}>
+      onSubmit={(e) => store.formOnSubmit({ onSubmit, postOptions }, e)}>
       {props.children}
     </form>
   )
@@ -117,6 +118,24 @@ const Provider = (props) => {
 
     const _formValidate = formValidate()
     opts.onSubmit({ items, isFormValid: _formValidate })
+
+    if (_formValidate && opts.postOptions) {
+      opts.postOptions.data = {}
+      Object.keys(items).map((key) => {
+        const item = items[key]
+        opts.postOptions.data[key] = item.value
+      })
+
+      axios({...opts.postOptions})
+        .then((res) => {
+          const validations = res.data.validations || {}
+          console.log(validations)
+          console.log(res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
   }
 
   const itemInitialize = (item) => {

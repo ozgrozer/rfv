@@ -12,20 +12,25 @@ var _validator = require('validator');
 
 var _validator2 = _interopRequireDefault(_validator);
 
+var _axios = require('axios');
+
+var _axios2 = _interopRequireDefault(_axios);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var Form = function Form(props) {
   var _onSubmit = props.onSubmit,
+      postOptions = props.postOptions,
       store = props.store,
-      htmlProps = _objectWithoutProperties(props, ['onSubmit', 'store']);
+      htmlProps = _objectWithoutProperties(props, ['onSubmit', 'postOptions', 'store']);
 
   return _react2.default.createElement(
     'form',
     _extends({}, htmlProps, {
       onSubmit: function onSubmit(e) {
-        return store.formOnSubmit({ onSubmit: _onSubmit }, e);
+        return store.formOnSubmit({ onSubmit: _onSubmit, postOptions: postOptions }, e);
       } }),
     props.children
   );
@@ -156,6 +161,22 @@ var Provider = function Provider(props) {
 
     var _formValidate = formValidate();
     opts.onSubmit({ items: items, isFormValid: _formValidate });
+
+    if (_formValidate && opts.postOptions) {
+      opts.postOptions.data = {};
+      Object.keys(items).map(function (key) {
+        var item = items[key];
+        opts.postOptions.data[key] = item.value;
+      });
+
+      (0, _axios2.default)(_extends({}, opts.postOptions)).then(function (res) {
+        var validations = res.data.validations || {};
+        console.log(validations);
+        console.log(res.data);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    }
   };
 
   var itemInitialize = function itemInitialize(item) {
