@@ -114,12 +114,12 @@ const Provider = (props) => {
   const formOnSubmit = (opts, e) => {
     e.preventDefault()
 
-    opts.preSubmit({ items })
+    if (opts.preSubmit) opts.preSubmit({ items })
 
     setFormIsValidating(true)
 
     const _formValidate = formValidate()
-    opts.onSubmit({ items, isFormValid: _formValidate })
+    if (opts.onSubmit) opts.onSubmit({ items, isFormValid: _formValidate })
 
     if (_formValidate && opts.postOptions) {
       opts.postOptions.data = itemsAndValues()
@@ -140,7 +140,7 @@ const Provider = (props) => {
             setItems(items)
           }
 
-          opts.postSubmit({ items, isFormValid, data: res.data })
+          if (opts.postSubmit) opts.postSubmit({ items, isFormValid, data: res.data })
         })
         .catch((err) => {
           console.log(err)
