@@ -11,7 +11,7 @@ RFV uses [Validator.js](https://github.com/chriso/validator.js) as a validator e
 
 [Demo (Form validator and form handler option)](https://codesandbox.io/s/o572300y0y)
 
-![](https://media.giphy.com/media/cYaBlE95HdbnO1sxSw/giphy.gif)
+![](https://media.giphy.com/media/2yxJVqqXa0vwO57Eo7/giphy.gif)
 
 ## Installation
 
