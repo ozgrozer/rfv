@@ -188,7 +188,7 @@ var Provider = function Provider(props) {
 
         if (opts.postSubmit) opts.postSubmit({ items: itemsAndValues(), isFormValid: isFormValid, data: res.data });
       }).catch(function (err) {
-        console.log(err);
+        if (opts.postSubmit) opts.postSubmit({ items: itemsAndValues(), isFormValid: _formValidate, error: err });
       });
     }
   };

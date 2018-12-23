@@ -144,7 +144,7 @@ const Provider = (props) => {
           if (opts.postSubmit) opts.postSubmit({ items: itemsAndValues(), isFormValid, data: res.data })
         })
         .catch((err) => {
-          console.log(err)
+          if (opts.postSubmit) opts.postSubmit({ items: itemsAndValues(), isFormValid: _formValidate, error: err })
         })
     }
   }
