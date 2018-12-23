@@ -3,6 +3,10 @@
 [![npm](https://img.shields.io/npm/v/rfv.svg?style=flat-square)](https://www.npmjs.com/package/rfv)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/ozgrozer/rfv/blob/master/license)
 
+React form validator and form handler.
+
+RFV uses [Validator.js](https://github.com/chriso/validator.js) as a validator engine, and [Axios](https://github.com/axios/axios) for HTTP requests.
+
 ## Installation
 
 Install with Yarn.
@@ -24,10 +28,11 @@ Only form validator option.
 ```jsx
 import React from 'react'
 import ReactDOM from 'react-dom'
+
 // Import package
 import { Form, Input, Textarea } from 'rfv'
 
-// Create validation rules ([Validator.js](https://github.com/chriso/validator.js#validators))
+// Create validation rules (https://github.com/chriso/validator.js#validators)
 const validations = {
   email: [
     {
@@ -78,10 +83,64 @@ const App = () => {
 ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
-Form validator and posting data option.
+Form validator and form handler option.
 
 ```jsx
-asd
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+// Import package
+import { Form, Input, Textarea } from 'rfv'
+
+// Create validation rules (https://github.com/chriso/validator.js#validators)
+const validations = {
+  email: [
+    {
+      rule: 'isEmail',
+      invalidFeedback: 'Please provide a valid email'
+    }
+  ],
+  message: [
+    {
+      rule: 'isLength',
+      args: { min: 1 },
+      invalidFeedback: 'Please provide a message'
+    }
+  ]
+}
+
+const App = () => {
+  // After an AJAX call, call the `res.data` to get the backend results
+  const postSubmit = (res) => {
+    console.log(res.data)
+  }
+
+  return (
+    // Build your form
+    <Form
+      postSubmit={postSubmit}
+      postOptions={{ method: 'post', url: 'url' }}>
+      <div>
+        <Input
+          type='email'
+          name='email'
+          validations={validations.email} />
+      </div>
+
+      <div>
+        <Textarea
+          name='message'
+          validations={validations.message} />
+      </div>
+
+      <div>
+        <button>Submit</button>
+      </div>
+    </Form>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
 And add `.is-invalid` and `.invalid-feedback` classes into your CSS.
