@@ -30,7 +30,9 @@ var Form = function Form(props) {
 
   return _react2.default.createElement(
     'form',
-    _extends({}, htmlProps, {
+    _extends({
+      noValidate: true
+    }, htmlProps, {
       onSubmit: function onSubmit(e) {
         return store.formOnSubmit({ preSubmit: preSubmit, onSubmit: _onSubmit, postSubmit: postSubmit, postOptions: postOptions }, e);
       } }),

@@ -7,6 +7,7 @@ const Form = (props) => {
 
   return (
     <form
+      noValidate
       {...htmlProps}
       onSubmit={(e) => store.formOnSubmit({ preSubmit, onSubmit, postSubmit, postOptions }, e)}>
       {props.children}
