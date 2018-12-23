@@ -5,23 +5,29 @@
 
 ## Installation
 
-Install package.
+Install with Yarn.
 
 ```sh
 $ yarn add rfv
 ```
 
-## Usage (Form Validator)
+Install with NPM.
 
-1/5. Import package.
-
-```jsx
-import { Form, Input, Textarea } from 'rfv'
+```sh
+$ npm i rfv
 ```
 
-2/5. Create validation rules. ([Validator.js](https://github.com/chriso/validator.js#validators))
+## Usage
+
+Only form validator option.
 
 ```jsx
+import React from 'react'
+import ReactDOM from 'react-dom'
+// Import package
+import { Form, Input, Textarea } from 'rfv'
+
+// Create validation rules ([Validator.js](https://github.com/chriso/validator.js#validators))
 const validations = {
   email: [
     {
@@ -37,42 +43,48 @@ const validations = {
     }
   ]
 }
-```
 
-3/5. Learn the status of validation with `res.isFormValid` and get your data as an object with `res.items`.
-
-```jsx
-const onSubmit = (res) => {
-  if (res.isFormValid) {
-    post('url', res.items)
+const App = () => {
+  // Learn the status of validation with `res.isFormValid` and get your form data as an object with `res.items` to make an AJAX request or something else
+  const onSubmit = (res) => {
+    if (res.isFormValid) {
+      post('url', res.items)
+    }
   }
+
+  return (
+    // Build your form
+    <Form onSubmit={onSubmit}>
+      <div>
+        <Input
+          type='email'
+          name='email'
+          validations={validations.email} />
+      </div>
+
+      <div>
+        <Textarea
+          name='message'
+          validations={validations.message} />
+      </div>
+
+      <div>
+        <button>Submit</button>
+      </div>
+    </Form>
+  )
 }
+
+ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
-4/5. Build your form.
+Form validator and posting data option.
 
 ```jsx
-<Form onSubmit={onSubmit}>
-  <div>
-    <Input
-      type='email'
-      name='email'
-      validations={validations.email} />
-  </div>
-
-  <div>
-    <Textarea
-      name='message'
-      validations={validations.message} />
-  </div>
-
-  <div>
-    <button>Submit</button>
-  </div>
-</Form>
+asd
 ```
 
-5/5. Add `.is-invalid` and `.invalid-feedback` classes into your CSS.
+And add `.is-invalid` and `.invalid-feedback` classes into your CSS.
 
 ```css
 .is-invalid {
@@ -87,6 +99,30 @@ const onSubmit = (res) => {
 .is-invalid ~ .invalid-feedback {
   display: block;
 }
+```
+
+## Props & Callbacks
+
+`<Form>`
+
+Props
+
+```jsx
+...
+```
+
+Callbacks
+
+```jsx
+...
+```
+
+`<Input>`, `<Select>`, `<Textarea>`
+
+Props
+
+```jsx
+...
 ```
 
 ## Contribution
