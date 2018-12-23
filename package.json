@@ -1,6 +1,6 @@
 {
   "name": "rfv",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "React Form Validator",
   "main": "./build/Rfv.js",
   "repository": {
@@ -14,8 +14,10 @@
   },
   "keywords": [
     "react",
+    "form-validator",
     "form-validation",
-    "form-validatior"
+    "react-form-validator",
+    "react-form-validation"
   ],
   "scripts": {
     "start": "parcel ./example/index.html --out-dir ./dist --public-url / --port 1144",
