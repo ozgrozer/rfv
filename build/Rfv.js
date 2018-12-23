@@ -58,18 +58,20 @@ var Item = function Item(props) {
     invalidFeedback: ''
   };
 
+  var itemClassName = (className || '') + (thisItem.className ? (className ? ' ' : '') + thisItem.className : '');
+
   var formElement = void 0;
   if (opts.element === 'input') {
     formElement = _react2.default.createElement('input', _extends({}, htmlProps, {
       value: thisItem.value,
-      className: '' + className + thisItem.className,
+      className: itemClassName,
       onChange: function onChange(e) {
         return store.itemOnChange(props, e);
       } }));
   } else if (opts.element === 'textarea') {
     formElement = _react2.default.createElement('textarea', _extends({}, htmlProps, {
       value: thisItem.value,
-      className: '' + className + thisItem.className,
+      className: itemClassName,
       onChange: function onChange(e) {
         return store.itemOnChange(props, e);
       } }));
@@ -78,7 +80,7 @@ var Item = function Item(props) {
       'select',
       _extends({}, htmlProps, {
         value: thisItem.value,
-        className: '' + className + thisItem.className,
+        className: itemClassName,
         onChange: function onChange(e) {
           return store.itemOnChange(props, e);
         } }),
@@ -149,7 +151,7 @@ var Provider = function Provider(props) {
 
       if (unvalidatedItems.length) {
         item.invalidFeedback = unvalidatedItems[0].invalidFeedback;
-        item.className = ' is-invalid';
+        item.className = 'is-invalid';
       }
     });
 
@@ -180,7 +182,7 @@ var Provider = function Provider(props) {
 
           Object.keys(validations).map(function (key) {
             items[key].invalidFeedback = validations[key];
-            items[key].className = ' is-invalid';
+            items[key].className = 'is-invalid';
           });
 
           setItems(items);

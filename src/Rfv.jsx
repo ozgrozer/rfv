@@ -28,13 +28,15 @@ const Item = (props) => {
     invalidFeedback: ''
   }
 
+  const itemClassName = (className || '') + (thisItem.className ? (className ? ' ' : '') + thisItem.className : '')
+
   let formElement
   if (opts.element === 'input') {
     formElement = (
       <input
         {...htmlProps}
         value={thisItem.value}
-        className={`${className}${thisItem.className}`}
+        className={itemClassName}
         onChange={e => store.itemOnChange(props, e)} />
     )
   } else if (opts.element === 'textarea') {
@@ -42,7 +44,7 @@ const Item = (props) => {
       <textarea
         {...htmlProps}
         value={thisItem.value}
-        className={`${className}${thisItem.className}`}
+        className={itemClassName}
         onChange={e => store.itemOnChange(props, e)} />
     )
   } else if (opts.element === 'select') {
@@ -50,7 +52,7 @@ const Item = (props) => {
       <select
         {...htmlProps}
         value={thisItem.value}
-        className={`${className}${thisItem.className}`}
+        className={itemClassName}
         onChange={e => store.itemOnChange(props, e)}>
         {props.children}
       </select>
@@ -103,7 +105,7 @@ const Provider = (props) => {
 
       if (unvalidatedItems.length) {
         item.invalidFeedback = unvalidatedItems[0].invalidFeedback
-        item.className = ' is-invalid'
+        item.className = 'is-invalid'
       }
     })
 
@@ -135,7 +137,7 @@ const Provider = (props) => {
 
             Object.keys(validations).map((key) => {
               items[key].invalidFeedback = validations[key]
-              items[key].className = ` is-invalid`
+              items[key].className = 'is-invalid'
             })
 
             setItems(items)
