@@ -117,23 +117,33 @@ const Provider = (props) => {
   const formOnSubmit = (opts, e) => {
     e.preventDefault()
 
-    if (opts.preSubmit) opts.preSubmit({ items: itemsAndValues() })
+    if (opts.preSubmit) {
+      opts.preSubmit({
+        items: itemsAndValues()
+      })
+    }
 
     setFormIsValidating(true)
 
-    const _formValidate = formValidate()
-    if (opts.onSubmit) opts.onSubmit({ items: itemsAndValues(), isFormValid: _formValidate })
+    const isFormValid = formValidate()
 
-    if (_formValidate && opts.postOptions) {
+    if (opts.onSubmit) {
+      opts.onSubmit({
+        items: itemsAndValues(),
+        isFormValid: isFormValid
+      })
+    }
+
+    if (isFormValid && opts.postOptions) {
       opts.postOptions.data = itemsAndValues()
 
       axios({...opts.postOptions})
         .then((res) => {
           const validations = res.data.validations || {}
 
-          let isFormValid = true
+          let isPostSubmitFormValid = true
           if (Object.keys(validations).length) {
-            isFormValid = false
+            isPostSubmitFormValid = false
 
             Object.keys(validations).map((key) => {
               items[key].invalidFeedback = validations[key]
@@ -143,10 +153,23 @@ const Provider = (props) => {
             setItems(items)
           }
 
-          if (opts.postSubmit) opts.postSubmit({ items: itemsAndValues(), isFormValid, data: res.data })
+          if (opts.postSubmit) {
+            opts.postSubmit({
+              isFormValid,
+              data: res.data,
+              isPostSubmitFormValid,
+              items: itemsAndValues()
+            })
+          }
         })
         .catch((err) => {
-          if (opts.postSubmit) opts.postSubmit({ items: itemsAndValues(), isFormValid: _formValidate, error: err })
+          if (opts.postSubmit) {
+            opts.postSubmit({
+              error: err,
+              isFormValid,
+              items: itemsAndValues()
+            })
+          }
         })
     }
   }
