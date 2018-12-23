@@ -43,6 +43,10 @@ const App = () => {
 
   const postSubmit = (res) => {
     console.log('postSubmit', res)
+
+    if (res.data.success) {
+      res.setItems({})
+    }
   }
 
   const postOptions = {

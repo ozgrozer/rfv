@@ -119,6 +119,7 @@ const Provider = (props) => {
 
     if (opts.preSubmit) {
       opts.preSubmit({
+        setItems: itemSet,
         items: itemsAndValues()
       })
     }
@@ -129,6 +130,7 @@ const Provider = (props) => {
 
     if (opts.onSubmit) {
       opts.onSubmit({
+        setItems: itemSet,
         items: itemsAndValues(),
         isFormValid: isFormValid
       })
@@ -157,6 +159,7 @@ const Provider = (props) => {
             opts.postSubmit({
               isFormValid,
               data: res.data,
+              setItems: itemSet,
               isPostSubmitFormValid,
               items: itemsAndValues()
             })
@@ -167,6 +170,7 @@ const Provider = (props) => {
             opts.postSubmit({
               error: err,
               isFormValid,
+              setItems: itemSet,
               items: itemsAndValues()
             })
           }
@@ -205,10 +209,35 @@ const Provider = (props) => {
     itemInitialize(item)
   }
 
+  const itemSet = (opts) => {
+    if (opts) {
+      const optsKeys = Object.keys(opts)
+      const itemKeys = Object.keys(items)
+
+      if (optsKeys.length) {
+        itemKeys.map((key) => {
+          const item = items[key]
+
+          if (opts.hasOwnProperty(key)) {
+            item.value = opts[key]
+          }
+        })
+      } else {
+        itemKeys.map((key) => {
+          const item = items[key]
+          item.value = ''
+        })
+      }
+
+      setItems(items)
+    }
+  }
+
   const store = {
     formOnSubmit,
     itemInitialize,
     itemOnChange,
+    setItems: itemSet,
     state: { items }
   }
 

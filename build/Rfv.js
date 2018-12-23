@@ -163,22 +163,34 @@ var Provider = function Provider(props) {
   var formOnSubmit = function formOnSubmit(opts, e) {
     e.preventDefault();
 
-    if (opts.preSubmit) opts.preSubmit({ items: itemsAndValues() });
+    if (opts.preSubmit) {
+      opts.preSubmit({
+        setItems: itemSet,
+        items: itemsAndValues()
+      });
+    }
 
     setFormIsValidating(true);
 
-    var _formValidate = formValidate();
-    if (opts.onSubmit) opts.onSubmit({ items: itemsAndValues(), isFormValid: _formValidate });
+    var isFormValid = formValidate();
 
-    if (_formValidate && opts.postOptions) {
+    if (opts.onSubmit) {
+      opts.onSubmit({
+        setItems: itemSet,
+        items: itemsAndValues(),
+        isFormValid: isFormValid
+      });
+    }
+
+    if (isFormValid && opts.postOptions) {
       opts.postOptions.data = itemsAndValues();
 
       (0, _axios2.default)(_extends({}, opts.postOptions)).then(function (res) {
         var validations = res.data.validations || {};
 
-        var isFormValid = true;
+        var isPostSubmitFormValid = true;
         if (Object.keys(validations).length) {
-          isFormValid = false;
+          isPostSubmitFormValid = false;
 
           Object.keys(validations).map(function (key) {
             items[key].invalidFeedback = validations[key];
@@ -188,9 +200,24 @@ var Provider = function Provider(props) {
           setItems(items);
         }
 
-        if (opts.postSubmit) opts.postSubmit({ items: itemsAndValues(), isFormValid: isFormValid, data: res.data });
+        if (opts.postSubmit) {
+          opts.postSubmit({
+            isFormValid: isFormValid,
+            data: res.data,
+            setItems: itemSet,
+            isPostSubmitFormValid: isPostSubmitFormValid,
+            items: itemsAndValues()
+          });
+        }
       }).catch(function (err) {
-        if (opts.postSubmit) opts.postSubmit({ items: itemsAndValues(), isFormValid: _formValidate, error: err });
+        if (opts.postSubmit) {
+          opts.postSubmit({
+            error: err,
+            isFormValid: isFormValid,
+            setItems: itemSet,
+            items: itemsAndValues()
+          });
+        }
       });
     }
   };
@@ -225,10 +252,35 @@ var Provider = function Provider(props) {
     itemInitialize(item);
   };
 
+  var itemSet = function itemSet(opts) {
+    if (opts) {
+      var optsKeys = Object.keys(opts);
+      var itemKeys = Object.keys(items);
+
+      if (optsKeys.length) {
+        itemKeys.map(function (key) {
+          var item = items[key];
+
+          if (opts.hasOwnProperty(key)) {
+            item.value = opts[key];
+          }
+        });
+      } else {
+        itemKeys.map(function (key) {
+          var item = items[key];
+          item.value = '';
+        });
+      }
+
+      setItems(items);
+    }
+  };
+
   var store = {
     formOnSubmit: formOnSubmit,
     itemInitialize: itemInitialize,
     itemOnChange: itemOnChange,
+    setItems: itemSet,
     state: { items: items }
   };
 
