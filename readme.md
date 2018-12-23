@@ -7,7 +7,11 @@ React form validator and form handler.
 
 RFV uses [Validator.js](https://github.com/chriso/validator.js) as a validator engine, and [Axios](https://github.com/axios/axios) for HTTP requests.
 
-[Demo (Only form validator option)](https://codesandbox.io/s/5wq8o1nqzl) - [Demo (Form validator and form handler option)](https://codesandbox.io/s/o572300y0y)
+[Demo (Only form validator option)](https://codesandbox.io/s/5wq8o1nqzl)
+
+[Demo (Form validator and form handler option)](https://codesandbox.io/s/o572300y0y)
+
+![](https://media.giphy.com/media/cYaBlE95HdbnO1sxSw/giphy.gif)
 
 ## Installation
 
