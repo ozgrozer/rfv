@@ -159,12 +159,12 @@ var Provider = function Provider(props) {
   var formOnSubmit = function formOnSubmit(opts, e) {
     e.preventDefault();
 
-    if (opts.preSubmit) opts.preSubmit({ items: items });
+    if (opts.preSubmit) opts.preSubmit({ items: itemsAndValues() });
 
     setFormIsValidating(true);
 
     var _formValidate = formValidate();
-    if (opts.onSubmit) opts.onSubmit({ items: items, isFormValid: _formValidate });
+    if (opts.onSubmit) opts.onSubmit({ items: itemsAndValues(), isFormValid: _formValidate });
 
     if (_formValidate && opts.postOptions) {
       opts.postOptions.data = itemsAndValues();
@@ -184,7 +184,7 @@ var Provider = function Provider(props) {
           setItems(items);
         }
 
-        if (opts.postSubmit) opts.postSubmit({ items: items, isFormValid: isFormValid, data: res.data });
+        if (opts.postSubmit) opts.postSubmit({ items: itemsAndValues(), isFormValid: isFormValid, data: res.data });
       }).catch(function (err) {
         console.log(err);
       });
