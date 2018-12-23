@@ -167,13 +167,38 @@ And add `.is-invalid` and `.invalid-feedback` classes into your CSS.
 Props
 
 ```jsx
-...
+// Since RFV uses Axios for HTTP requests, whatever you pass into postOptions prop except `data: {}`, directly goes into Axios
+<Form
+  postOptions={{
+    url: 'url',
+    method: 'post',
+    headers: {
+      'Authorization': 'Token ...'
+    }
+  }}>
 ```
 
 Callbacks
 
 ```jsx
-...
+<Form
+  preSubmit={(res) => {
+    // res.items
+    // res.setItems({})
+  }}
+  onSubmit={(res) => {
+    // res.items
+    // res.isFormValid
+    // res.setItems({})
+  }}
+  postSubmit={(res) => {
+    // res.data
+    // res.error
+    // res.items
+    // res.isFormValid
+    // res.setItems({})
+    // res.isPostSubmitFormValid
+  }}>
 ```
 
 `<Input>`, `<Select>`, `<Textarea>`
@@ -181,7 +206,20 @@ Callbacks
 Props
 
 ```jsx
-...
+// You can pass more than one validation
+<Input
+  validations={[
+    {
+      rule: 'isLength',
+      args: { min: 1 },
+      invalidFeedback: 'Please provide a username'
+    },
+    {
+      rule: 'isLength',
+      args: { min: 4, max: 32 },
+      invalidFeedback: 'Username must be minimum 4, maximum 32 characters'
+    }
+  ]} />
 ```
 
 ## Contribution
