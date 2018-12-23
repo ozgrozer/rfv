@@ -62,12 +62,22 @@ var Item = function Item(props) {
 
   var formElement = void 0;
   if (opts.element === 'input') {
-    formElement = _react2.default.createElement('input', _extends({}, htmlProps, {
-      value: thisItem.value,
-      className: itemClassName,
-      onChange: function onChange(e) {
-        return store.itemOnChange(props, e);
-      } }));
+    if (opts.type === 'checkbox') {
+      formElement = _react2.default.createElement('input', _extends({}, htmlProps, {
+        value: thisItem.value,
+        className: itemClassName,
+        checked: thisItem.value === 'on' || false,
+        onChange: function onChange(e) {
+          return store.itemOnChange(props, e);
+        } }));
+    } else {
+      formElement = _react2.default.createElement('input', _extends({}, htmlProps, {
+        value: thisItem.value,
+        className: itemClassName,
+        onChange: function onChange(e) {
+          return store.itemOnChange(props, e);
+        } }));
+    }
   } else if (opts.element === 'textarea') {
     formElement = _react2.default.createElement('textarea', _extends({}, htmlProps, {
       value: thisItem.value,
@@ -101,7 +111,7 @@ var Item = function Item(props) {
 };
 
 var Input = function Input(props) {
-  return _react2.default.createElement(Item, _extends({}, props, { opts: { element: 'input' } }));
+  return _react2.default.createElement(Item, _extends({}, props, { opts: { element: 'input', type: props.type } }));
 };
 var Textarea = function Textarea(props) {
   return _react2.default.createElement(Item, _extends({}, props, { opts: { element: 'textarea' } }));
@@ -234,8 +244,13 @@ var Provider = function Provider(props) {
   };
 
   var itemInitialize = function itemInitialize(item) {
+    var itemValue = item.value || '';
+    if (item.opts.element === 'input' && item.opts.type === 'checkbox') {
+      itemValue = item.checked ? 'on' : 'off';
+    }
+
     items[item.name] = {
-      value: item.value || '',
+      value: itemValue,
       validations: item.validations || []
     };
 
@@ -246,6 +261,7 @@ var Provider = function Provider(props) {
 
   var itemOnChange = function itemOnChange(props, e) {
     var item = _extends({}, props, {
+      checked: e.target.checked,
       value: e.target.value
     });
 

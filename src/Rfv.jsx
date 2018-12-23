@@ -32,13 +32,24 @@ const Item = (props) => {
 
   let formElement
   if (opts.element === 'input') {
-    formElement = (
-      <input
-        {...htmlProps}
-        value={thisItem.value}
-        className={itemClassName}
-        onChange={e => store.itemOnChange(props, e)} />
-    )
+    if (opts.type === 'checkbox') {
+      formElement = (
+        <input
+          {...htmlProps}
+          value={thisItem.value}
+          className={itemClassName}
+          checked={thisItem.value === 'on' || false}
+          onChange={e => store.itemOnChange(props, e)} />
+      )
+    } else {
+      formElement = (
+        <input
+          {...htmlProps}
+          value={thisItem.value}
+          className={itemClassName}
+          onChange={e => store.itemOnChange(props, e)} />
+      )
+    }
   } else if (opts.element === 'textarea') {
     formElement = (
       <textarea
@@ -67,7 +78,7 @@ const Item = (props) => {
   )
 }
 
-const Input = (props) => <Item {...props} opts={{ element: 'input' }} />
+const Input = (props) => <Item {...props} opts={{ element: 'input', type: props.type }} />
 const Textarea = (props) => <Item {...props} opts={{ element: 'textarea' }} />
 const Select = (props) => <Item {...props} opts={{ element: 'select' }} />
 
@@ -190,8 +201,13 @@ const Provider = (props) => {
   }
 
   const itemInitialize = (item) => {
+    let itemValue = item.value || ''
+    if (item.opts.element === 'input' && item.opts.type === 'checkbox') {
+      itemValue = item.checked ? 'on' : 'off'
+    }
+
     items[item.name] = {
-      value: item.value || '',
+      value: itemValue,
       validations: item.validations || []
     }
 
@@ -203,6 +219,7 @@ const Provider = (props) => {
   const itemOnChange = (props, e) => {
     const item = {
       ...props,
+      checked: e.target.checked,
       value: e.target.value
     }
 

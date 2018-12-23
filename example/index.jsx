@@ -16,6 +16,13 @@ const validations = {
       invalidFeedback: 'Username must be minimum 4, maximum 32 characters'
     }
   ],
+  rememberMe: [
+    {
+      rule: 'equals',
+      args: 'on',
+      invalidFeedback: 'Please check'
+    }
+  ],
   yesOrNo: [
     {
       rule: 'isLength',
@@ -72,6 +79,20 @@ const App = () => {
           name='username'
           placeholder='Username'
           validations={validations.username} />
+      </div>
+
+      <br />
+
+      <div>
+        <Input
+          checked
+          type='checkbox'
+          id='rememberMe'
+          name='rememberMe'
+          validations={validations.rememberMe} />
+        <label htmlFor='rememberMe'>
+          Remember me
+        </label>
       </div>
 
       <br />
