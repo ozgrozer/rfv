@@ -1,6 +1,6 @@
 {
   "name": "rfv",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "React Form Validator",
   "main": "./build/Rfv.js",
   "repository": {
