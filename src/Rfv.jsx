@@ -39,7 +39,7 @@ const Item = (props) => {
           value={thisItem.value}
           className={itemClassName}
           checked={thisItem.value === 'on' || false}
-          onChange={e => store.itemOnChange(props, e)} />
+          onChange={e => store.itemOnChange({ props, e, onChange })} />
       )
     } else {
       formElement = (
@@ -47,7 +47,7 @@ const Item = (props) => {
           {...htmlProps}
           value={thisItem.value}
           className={itemClassName}
-          onChange={e => store.itemOnChange(props, e)} />
+          onChange={e => store.itemOnChange({ props, e, onChange })} />
       )
     }
   } else if (opts.element === 'textarea') {
@@ -56,7 +56,7 @@ const Item = (props) => {
         {...htmlProps}
         value={thisItem.value}
         className={itemClassName}
-        onChange={e => store.itemOnChange(props, e)} />
+        onChange={e => store.itemOnChange({ props, e, onChange })} />
     )
   } else if (opts.element === 'select') {
     formElement = (
@@ -64,7 +64,7 @@ const Item = (props) => {
         {...htmlProps}
         value={thisItem.value}
         className={itemClassName}
-        onChange={e => store.itemOnChange(props, e)}>
+        onChange={e => store.itemOnChange({ props, e, onChange })}>
         {props.children}
       </select>
     )
@@ -216,11 +216,13 @@ const Provider = (props) => {
     if (formIsValidating) formValidate()
   }
 
-  const itemOnChange = (props, e) => {
+  const itemOnChange = (opts) => {
+    if (opts.onChange) opts.onChange(opts.e)
+
     const item = {
-      ...props,
-      checked: e.target.checked,
-      value: e.target.value
+      ...opts.props,
+      checked: opts.e.target.checked,
+      value: opts.e.target.value
     }
 
     itemInitialize(item)

@@ -45,7 +45,7 @@ var Item = function Item(props) {
       store = props.store,
       validations = props.validations,
       className = props.className,
-      onChange = props.onChange,
+      _onChange = props.onChange,
       htmlProps = _objectWithoutProperties(props, ['opts', 'store', 'validations', 'className', 'onChange']);
 
   (0, _react.useEffect)(function () {
@@ -68,14 +68,14 @@ var Item = function Item(props) {
         className: itemClassName,
         checked: thisItem.value === 'on' || false,
         onChange: function onChange(e) {
-          return store.itemOnChange(props, e);
+          return store.itemOnChange({ props: props, e: e, onChange: _onChange });
         } }));
     } else {
       formElement = _react2.default.createElement('input', _extends({}, htmlProps, {
         value: thisItem.value,
         className: itemClassName,
         onChange: function onChange(e) {
-          return store.itemOnChange(props, e);
+          return store.itemOnChange({ props: props, e: e, onChange: _onChange });
         } }));
     }
   } else if (opts.element === 'textarea') {
@@ -83,7 +83,7 @@ var Item = function Item(props) {
       value: thisItem.value,
       className: itemClassName,
       onChange: function onChange(e) {
-        return store.itemOnChange(props, e);
+        return store.itemOnChange({ props: props, e: e, onChange: _onChange });
       } }));
   } else if (opts.element === 'select') {
     formElement = _react2.default.createElement(
@@ -92,7 +92,7 @@ var Item = function Item(props) {
         value: thisItem.value,
         className: itemClassName,
         onChange: function onChange(e) {
-          return store.itemOnChange(props, e);
+          return store.itemOnChange({ props: props, e: e, onChange: _onChange });
         } }),
       props.children
     );
@@ -259,10 +259,12 @@ var Provider = function Provider(props) {
     if (formIsValidating) formValidate();
   };
 
-  var itemOnChange = function itemOnChange(props, e) {
-    var item = _extends({}, props, {
-      checked: e.target.checked,
-      value: e.target.value
+  var itemOnChange = function itemOnChange(opts) {
+    if (opts.onChange) opts.onChange(opts.e);
+
+    var item = _extends({}, opts.props, {
+      checked: opts.e.target.checked,
+      value: opts.e.target.value
     });
 
     itemInitialize(item);
