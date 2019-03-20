@@ -88,6 +88,28 @@ const Provider = (props) => {
   const [items, setItems] = useState({})
   const [formIsValidating, setFormIsValidating] = useState(false)
 
+  const itemValidate = (opts) => {
+    const item = items[opts.name]
+
+    item.validations.map((itemValidation, i) => {
+      const validate = validator[itemValidation.rule](item.value, itemValidation.args)
+      if (validate) {
+        itemValidation.validated = true
+      } else {
+        itemValidation.validated = false
+      }
+    })
+
+    const unvalidatedItems = []
+    item.validations.map((itemValidation, i) => {
+      if (!itemValidation.validated) {
+        unvalidatedItems.push(itemValidation)
+      }
+    })
+
+    item.validated = !unvalidatedItems.length || false
+  }
+
   const formValidate = () => {
     let howManyItemsValidated = 0
     let howManyItemsAreGonnaValidate = 0
@@ -217,8 +239,6 @@ const Provider = (props) => {
   }
 
   const itemOnChange = (opts) => {
-    if (opts.onChange) opts.onChange(opts.e)
-
     const item = {
       ...opts.props,
       checked: opts.e.target.checked,
@@ -226,6 +246,11 @@ const Provider = (props) => {
     }
 
     itemInitialize(item)
+
+    if (opts.onChange) {
+      itemValidate({ name: opts.props.name })
+      opts.onChange({ e: opts.e, validated: items[opts.props.name].validated })
+    }
   }
 
   const itemSet = (opts) => {

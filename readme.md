@@ -228,6 +228,16 @@ Props
   ]} />
 ```
 
+Callbacks
+
+```jsx
+<Input
+  onChange={(res) => {
+    // res.e
+    // res.validated
+  }} />
+```
+
 ## Contribution
 
 Feel free to contribute. Open a new [issue](https://github.com/ozgrozer/rfv/issues), or make a [pull request](https://github.com/ozgrozer/rfv/pulls).

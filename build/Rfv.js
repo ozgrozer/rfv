@@ -133,6 +133,28 @@ var Provider = function Provider(props) {
       formIsValidating = _useState4[0],
       setFormIsValidating = _useState4[1];
 
+  var itemValidate = function itemValidate(opts) {
+    var item = items[opts.name];
+
+    item.validations.map(function (itemValidation, i) {
+      var validate = _validator2.default[itemValidation.rule](item.value, itemValidation.args);
+      if (validate) {
+        itemValidation.validated = true;
+      } else {
+        itemValidation.validated = false;
+      }
+    });
+
+    var unvalidatedItems = [];
+    item.validations.map(function (itemValidation, i) {
+      if (!itemValidation.validated) {
+        unvalidatedItems.push(itemValidation);
+      }
+    });
+
+    item.validated = !unvalidatedItems.length || false;
+  };
+
   var formValidate = function formValidate() {
     var howManyItemsValidated = 0;
     var howManyItemsAreGonnaValidate = 0;
@@ -260,14 +282,17 @@ var Provider = function Provider(props) {
   };
 
   var itemOnChange = function itemOnChange(opts) {
-    if (opts.onChange) opts.onChange(opts.e);
-
     var item = _extends({}, opts.props, {
       checked: opts.e.target.checked,
       value: opts.e.target.value
     });
 
     itemInitialize(item);
+
+    if (opts.onChange) {
+      itemValidate({ name: opts.props.name });
+      opts.onChange({ e: opts.e, validated: items[opts.props.name].validated });
+    }
   };
 
   var itemSet = function itemSet(opts) {
