@@ -160,6 +160,14 @@ var Provider = function Provider(props) {
     item.validated = !unvalidatedItems.length || false;
   };
 
+  var formUnvalidate = function formUnvalidate() {
+    Object.keys(items).map(function (key) {
+      var item = items[key];
+      item.className = '';
+    });
+    setItems(items);
+  };
+
   var formValidate = function formValidate() {
     var howManyItemsValidated = 0;
     var howManyItemsAreGonnaValidate = 0;
@@ -326,7 +334,11 @@ var Provider = function Provider(props) {
 
   var runValidation = function runValidation(trueFalse) {
     setFormIsValidating(trueFalse);
-    if (trueFalse) formValidate();
+    if (trueFalse) {
+      formValidate();
+    } else {
+      formUnvalidate();
+    }
   };
 
   var store = {

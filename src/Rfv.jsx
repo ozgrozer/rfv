@@ -114,6 +114,14 @@ const Provider = (props) => {
     item.validated = !unvalidatedItems.length || false
   }
 
+  const formUnvalidate = () => {
+    Object.keys(items).map((key) => {
+      const item = items[key]
+      item.className = ''
+    })
+    setItems(items)
+  }
+
   const formValidate = () => {
     let howManyItemsValidated = 0
     let howManyItemsAreGonnaValidate = 0
@@ -283,7 +291,11 @@ const Provider = (props) => {
 
   const runValidation = (trueFalse) => {
     setFormIsValidating(trueFalse)
-    if (trueFalse) formValidate()
+    if (trueFalse) {
+      formValidate()
+    } else {
+      formUnvalidate()
+    }
   }
 
   const store = {
