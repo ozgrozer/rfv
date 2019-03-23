@@ -166,6 +166,22 @@ And add `.is-invalid` and `.invalid-feedback` classes into your CSS.
 }
 ```
 
+Make sure you add the errors to the `validations` object in backend.
+
+```js
+app.post('/sign-up', (req, res) => {
+  const result = {
+    validations: {}
+  }
+
+  if (req.body.username === 'john') {
+    result.validations.username = 'john is already registered'
+  }
+
+  res.send(result)
+})
+```
+
 ## Props & Callbacks
 
 `<Form>`
@@ -175,6 +191,7 @@ Props
 ```jsx
 // Since RFV uses Axios for HTTP requests, whatever you pass into postOptions prop except `data: {}`, directly goes into Axios
 <Form
+  runValidation={true|false}
   postOptions={{
     url: 'url',
     method: 'post',

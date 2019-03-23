@@ -21,12 +21,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var Form = function Form(props) {
-  var preSubmit = props.preSubmit,
+  var runValidation = props.runValidation,
+      preSubmit = props.preSubmit,
       _onSubmit = props.onSubmit,
       postSubmit = props.postSubmit,
       postOptions = props.postOptions,
       store = props.store,
-      htmlProps = _objectWithoutProperties(props, ['preSubmit', 'onSubmit', 'postSubmit', 'postOptions', 'store']);
+      htmlProps = _objectWithoutProperties(props, ['runValidation', 'preSubmit', 'onSubmit', 'postSubmit', 'postOptions', 'store']);
+
+  (0, _react.useEffect)(function () {
+    store.runValidation(runValidation);
+  }, [runValidation]);
 
   return _react2.default.createElement(
     'form',
@@ -319,10 +324,16 @@ var Provider = function Provider(props) {
     }
   };
 
+  var runValidation = function runValidation(trueFalse) {
+    setFormIsValidating(trueFalse);
+    if (trueFalse) formValidate();
+  };
+
   var store = {
     formOnSubmit: formOnSubmit,
     itemInitialize: itemInitialize,
     itemOnChange: itemOnChange,
+    runValidation: runValidation,
     setItems: itemSet,
     state: { items: items }
   };

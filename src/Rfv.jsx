@@ -3,7 +3,11 @@ import validator from 'validator'
 import axios from 'axios'
 
 const Form = (props) => {
-  const { preSubmit, onSubmit, postSubmit, postOptions, store, ...htmlProps } = props
+  const { runValidation, preSubmit, onSubmit, postSubmit, postOptions, store, ...htmlProps } = props
+
+  useEffect(() => {
+    store.runValidation(runValidation)
+  }, [runValidation])
 
   return (
     <form
@@ -277,10 +281,16 @@ const Provider = (props) => {
     }
   }
 
+  const runValidation = (trueFalse) => {
+    setFormIsValidating(trueFalse)
+    if (trueFalse) formValidate()
+  }
+
   const store = {
     formOnSubmit,
     itemInitialize,
     itemOnChange,
+    runValidation,
     setItems: itemSet,
     state: { items }
   }
