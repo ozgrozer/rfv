@@ -1,6 +1,6 @@
 {
   "name": "rfv",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "React Form Validator",
   "main": "./build/Rfv.js",
   "repository": {
@@ -29,6 +29,9 @@
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
     "validator": "^10.9.0"
+  },
+  "peerDependencies": {
+    "react": "16.7.0-alpha.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
