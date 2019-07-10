@@ -90,6 +90,7 @@ const Context = React.createContext()
 
 const Provider = (props) => {
   const [items, setItems] = useState({})
+  const [interestingBug, setInterestingBug] = useState('')
   const [formIsValidating, setFormIsValidating] = useState(false)
 
   const itemValidate = (opts) => {
@@ -245,6 +246,7 @@ const Provider = (props) => {
       validations: item.validations || []
     }
 
+    setInterestingBug(itemValue)
     setItems(items)
 
     if (formIsValidating) formValidate()
