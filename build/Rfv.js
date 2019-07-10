@@ -133,10 +133,15 @@ var Provider = function Provider(props) {
       items = _useState2[0],
       setItems = _useState2[1];
 
-  var _useState3 = (0, _react.useState)(false),
+  var _useState3 = (0, _react.useState)(''),
       _useState4 = _slicedToArray(_useState3, 2),
-      formIsValidating = _useState4[0],
-      setFormIsValidating = _useState4[1];
+      interestingBug = _useState4[0],
+      setInterestingBug = _useState4[1];
+
+  var _useState5 = (0, _react.useState)(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      formIsValidating = _useState6[0],
+      setFormIsValidating = _useState6[1];
 
   var itemValidate = function itemValidate(opts) {
     var item = items[opts.name];
@@ -289,6 +294,7 @@ var Provider = function Provider(props) {
       validations: item.validations || []
     };
 
+    setInterestingBug(itemValue);
     setItems(items);
 
     if (formIsValidating) formValidate();
