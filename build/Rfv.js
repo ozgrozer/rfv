@@ -1,113 +1,80 @@
-'use strict';
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _validator = require('validator');
-
-var _validator2 = _interopRequireDefault(_validator);
-
-var _axios = require('axios');
-
-var _axios2 = _interopRequireDefault(_axios);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-var Form = function Form(props) {
-  var runValidation = props.runValidation,
-      preSubmit = props.preSubmit,
-      _onSubmit = props.onSubmit,
-      postSubmit = props.postSubmit,
-      postOptions = props.postOptions,
-      store = props.store,
-      htmlProps = _objectWithoutProperties(props, ['runValidation', 'preSubmit', 'onSubmit', 'postSubmit', 'postOptions', 'store']);
+import React, { Fragment, useEffect, useState } from 'react';
+import validator from 'validator';
+import axios from 'axios';
 
-  (0, _react.useEffect)(function () {
+const Form = props => {
+  const { runValidation, preSubmit, onSubmit, postSubmit, postOptions, store } = props,
+        htmlProps = _objectWithoutProperties(props, ['runValidation', 'preSubmit', 'onSubmit', 'postSubmit', 'postOptions', 'store']);
+
+  useEffect(() => {
     store.runValidation(runValidation);
   }, [runValidation]);
 
-  return _react2.default.createElement(
+  return React.createElement(
     'form',
     _extends({
       noValidate: true
     }, htmlProps, {
-      onSubmit: function onSubmit(e) {
-        return store.formOnSubmit({ preSubmit: preSubmit, onSubmit: _onSubmit, postSubmit: postSubmit, postOptions: postOptions }, e);
-      } }),
+      onSubmit: e => store.formOnSubmit({ preSubmit, onSubmit, postSubmit, postOptions }, e) }),
     props.children
   );
 };
 
-var Item = function Item(props) {
-  var opts = props.opts,
-      store = props.store,
-      validations = props.validations,
-      className = props.className,
-      _onChange = props.onChange,
-      htmlProps = _objectWithoutProperties(props, ['opts', 'store', 'validations', 'className', 'onChange']);
+const Item = props => {
+  const { opts, store, validations, className, onChange } = props,
+        htmlProps = _objectWithoutProperties(props, ['opts', 'store', 'validations', 'className', 'onChange']);
 
-  (0, _react.useEffect)(function () {
+  useEffect(() => {
     store.itemInitialize(props);
   }, [props.value]);
 
-  var thisItem = store.state.items[props.name] || {
+  const thisItem = store.state.items[props.name] || {
     value: '',
     className: '',
     invalidFeedback: ''
   };
 
-  var itemClassName = (className || '') + (thisItem.className ? (className ? ' ' : '') + thisItem.className : '');
+  const itemClassName = (className || '') + (thisItem.className ? (className ? ' ' : '') + thisItem.className : '');
 
-  var formElement = void 0;
+  let formElement;
   if (opts.element === 'input') {
     if (opts.type === 'checkbox') {
-      formElement = _react2.default.createElement('input', _extends({}, htmlProps, {
+      formElement = React.createElement('input', _extends({}, htmlProps, {
         value: thisItem.value,
         className: itemClassName,
         checked: thisItem.value === 'on' || false,
-        onChange: function onChange(e) {
-          return store.itemOnChange({ props: props, e: e, onChange: _onChange });
-        } }));
+        onChange: e => store.itemOnChange({ props, e, onChange }) }));
     } else {
-      formElement = _react2.default.createElement('input', _extends({}, htmlProps, {
+      formElement = React.createElement('input', _extends({}, htmlProps, {
         value: thisItem.value,
         className: itemClassName,
-        onChange: function onChange(e) {
-          return store.itemOnChange({ props: props, e: e, onChange: _onChange });
-        } }));
+        onChange: e => store.itemOnChange({ props, e, onChange }) }));
     }
   } else if (opts.element === 'textarea') {
-    formElement = _react2.default.createElement('textarea', _extends({}, htmlProps, {
+    formElement = React.createElement('textarea', _extends({}, htmlProps, {
       value: thisItem.value,
       className: itemClassName,
-      onChange: function onChange(e) {
-        return store.itemOnChange({ props: props, e: e, onChange: _onChange });
-      } }));
+      onChange: e => store.itemOnChange({ props, e, onChange }) }));
   } else if (opts.element === 'select') {
-    formElement = _react2.default.createElement(
+    formElement = React.createElement(
       'select',
       _extends({}, htmlProps, {
         value: thisItem.value,
         className: itemClassName,
-        onChange: function onChange(e) {
-          return store.itemOnChange({ props: props, e: e, onChange: _onChange });
-        } }),
+        onChange: e => store.itemOnChange({ props, e, onChange }) }),
       props.children
     );
   }
 
-  return _react2.default.createElement(
-    _react.Fragment,
+  return React.createElement(
+    Fragment,
     null,
     formElement,
-    thisItem.invalidFeedback ? _react2.default.createElement(
+    thisItem.invalidFeedback ? React.createElement(
       'div',
       { className: 'invalid-feedback' },
       thisItem.invalidFeedback
@@ -115,39 +82,22 @@ var Item = function Item(props) {
   );
 };
 
-var Input = function Input(props) {
-  return _react2.default.createElement(Item, _extends({}, props, { opts: { element: 'input', type: props.type } }));
-};
-var Textarea = function Textarea(props) {
-  return _react2.default.createElement(Item, _extends({}, props, { opts: { element: 'textarea' } }));
-};
-var Select = function Select(props) {
-  return _react2.default.createElement(Item, _extends({}, props, { opts: { element: 'select' } }));
-};
+const Input = props => React.createElement(Item, _extends({}, props, { opts: { element: 'input', type: props.type } }));
+const Textarea = props => React.createElement(Item, _extends({}, props, { opts: { element: 'textarea' } }));
+const Select = props => React.createElement(Item, _extends({}, props, { opts: { element: 'select' } }));
 
-var Context = _react2.default.createContext();
+const Context = React.createContext();
 
-var Provider = function Provider(props) {
-  var _useState = (0, _react.useState)({}),
-      _useState2 = _slicedToArray(_useState, 2),
-      items = _useState2[0],
-      setItems = _useState2[1];
+const Provider = props => {
+  const [items, setItems] = useState({});
+  const [interestingBug, setInterestingBug] = useState('');
+  const [formIsValidating, setFormIsValidating] = useState(false);
 
-  var _useState3 = (0, _react.useState)(''),
-      _useState4 = _slicedToArray(_useState3, 2),
-      interestingBug = _useState4[0],
-      setInterestingBug = _useState4[1];
+  const itemValidate = opts => {
+    const item = items[opts.name];
 
-  var _useState5 = (0, _react.useState)(false),
-      _useState6 = _slicedToArray(_useState5, 2),
-      formIsValidating = _useState6[0],
-      setFormIsValidating = _useState6[1];
-
-  var itemValidate = function itemValidate(opts) {
-    var item = items[opts.name];
-
-    item.validations.map(function (itemValidation, i) {
-      var validate = _validator2.default[itemValidation.rule](item.value, itemValidation.args);
+    item.validations.map((itemValidation, i) => {
+      const validate = validator[itemValidation.rule](item.value, itemValidation.args);
       if (validate) {
         itemValidation.validated = true;
       } else {
@@ -155,8 +105,8 @@ var Provider = function Provider(props) {
       }
     });
 
-    var unvalidatedItems = [];
-    item.validations.map(function (itemValidation, i) {
+    const unvalidatedItems = [];
+    item.validations.map((itemValidation, i) => {
       if (!itemValidation.validated) {
         unvalidatedItems.push(itemValidation);
       }
@@ -165,25 +115,25 @@ var Provider = function Provider(props) {
     item.validated = !unvalidatedItems.length || false;
   };
 
-  var formUnvalidate = function formUnvalidate() {
-    Object.keys(items).map(function (key) {
-      var item = items[key];
+  const formUnvalidate = () => {
+    Object.keys(items).map(key => {
+      const item = items[key];
       item.className = '';
     });
     setItems(items);
   };
 
-  var formValidate = function formValidate() {
-    var howManyItemsValidated = 0;
-    var howManyItemsAreGonnaValidate = 0;
+  const formValidate = () => {
+    let howManyItemsValidated = 0;
+    let howManyItemsAreGonnaValidate = 0;
 
-    Object.keys(items).map(function (key) {
-      var item = items[key];
+    Object.keys(items).map(key => {
+      const item = items[key];
 
-      item.validations.map(function (itemValidation, i) {
+      item.validations.map((itemValidation, i) => {
         howManyItemsAreGonnaValidate++;
 
-        var validate = _validator2.default[itemValidation.rule](item.value, itemValidation.args);
+        const validate = validator[itemValidation.rule](item.value, itemValidation.args);
         if (validate) {
           itemValidation.validated = true;
           howManyItemsValidated++;
@@ -192,8 +142,8 @@ var Provider = function Provider(props) {
         }
       });
 
-      var unvalidatedItems = [];
-      item.validations.map(function (itemValidation, i) {
+      const unvalidatedItems = [];
+      item.validations.map((itemValidation, i) => {
         if (!itemValidation.validated) {
           unvalidatedItems.push(itemValidation);
         }
@@ -210,7 +160,7 @@ var Provider = function Provider(props) {
     return howManyItemsAreGonnaValidate === howManyItemsValidated || false;
   };
 
-  var formOnSubmit = function formOnSubmit(opts, e) {
+  const formOnSubmit = (opts, e) => {
     e.preventDefault();
 
     if (opts.preSubmit) {
@@ -222,7 +172,7 @@ var Provider = function Provider(props) {
 
     setFormIsValidating(true);
 
-    var isFormValid = formValidate();
+    const isFormValid = formValidate();
 
     if (opts.onSubmit) {
       opts.onSubmit({
@@ -235,35 +185,36 @@ var Provider = function Provider(props) {
     if (isFormValid && opts.postOptions) {
       opts.postOptions.data = itemsAndValues();
 
-      (0, _axios2.default)(_extends({}, opts.postOptions)).then(function (res) {
-        var validations = res.data.validations || {};
+      axios(_extends({}, opts.postOptions)).then(res => {
+        const validations = res.data.validations || {};
 
-        var isPostSubmitFormValid = true;
+        let isPostSubmitFormValid = true;
         if (Object.keys(validations).length) {
           isPostSubmitFormValid = false;
 
-          Object.keys(validations).map(function (key) {
+          Object.keys(validations).map(key => {
             items[key].invalidFeedback = validations[key];
             items[key].className = 'is-invalid';
           });
 
-          setItems(items);
+          const newItems = Object.assign({}, items);
+          setItems(newItems);
         }
 
         if (opts.postSubmit) {
           opts.postSubmit({
-            isFormValid: isFormValid,
+            isFormValid,
             data: res.data,
             setItems: itemSet,
-            isPostSubmitFormValid: isPostSubmitFormValid,
+            isPostSubmitFormValid,
             items: itemsAndValues()
           });
         }
-      }).catch(function (err) {
+      }).catch(err => {
         if (opts.postSubmit) {
           opts.postSubmit({
             error: err,
-            isFormValid: isFormValid,
+            isFormValid,
             setItems: itemSet,
             items: itemsAndValues()
           });
@@ -272,19 +223,19 @@ var Provider = function Provider(props) {
     }
   };
 
-  var itemsAndValues = function itemsAndValues() {
-    var data = {};
+  const itemsAndValues = () => {
+    const data = {};
 
-    Object.keys(items).map(function (key) {
-      var item = items[key];
+    Object.keys(items).map(key => {
+      const item = items[key];
       data[key] = item.value;
     });
 
     return data;
   };
 
-  var itemInitialize = function itemInitialize(item) {
-    var itemValue = item.value || '';
+  const itemInitialize = item => {
+    let itemValue = item.value || '';
     if (item.opts.element === 'input' && item.opts.type === 'checkbox') {
       itemValue = item.checked ? 'on' : 'off';
     }
@@ -300,8 +251,8 @@ var Provider = function Provider(props) {
     if (formIsValidating) formValidate();
   };
 
-  var itemOnChange = function itemOnChange(opts) {
-    var item = _extends({}, opts.props, {
+  const itemOnChange = opts => {
+    const item = _extends({}, opts.props, {
       checked: opts.e.target.checked,
       value: opts.e.target.value
     });
@@ -314,22 +265,22 @@ var Provider = function Provider(props) {
     }
   };
 
-  var itemSet = function itemSet(opts) {
+  const itemSet = opts => {
     if (opts) {
-      var optsKeys = Object.keys(opts);
-      var itemKeys = Object.keys(items);
+      const optsKeys = Object.keys(opts);
+      const itemKeys = Object.keys(items);
 
       if (optsKeys.length) {
-        itemKeys.map(function (key) {
-          var item = items[key];
+        itemKeys.map(key => {
+          const item = items[key];
 
           if (opts.hasOwnProperty(key)) {
             item.value = opts[key];
           }
         });
       } else {
-        itemKeys.map(function (key) {
-          var item = items[key];
+        itemKeys.map(key => {
+          const item = items[key];
           item.value = '';
         });
       }
@@ -338,7 +289,7 @@ var Provider = function Provider(props) {
     }
   };
 
-  var runValidation = function runValidation(trueFalse) {
+  const runValidation = trueFalse => {
     setFormIsValidating(trueFalse);
     if (trueFalse) {
       formValidate();
@@ -347,48 +298,40 @@ var Provider = function Provider(props) {
     }
   };
 
-  var store = {
-    formOnSubmit: formOnSubmit,
-    itemInitialize: itemInitialize,
-    itemOnChange: itemOnChange,
-    runValidation: runValidation,
+  const store = {
+    formOnSubmit,
+    itemInitialize,
+    itemOnChange,
+    runValidation,
     setItems: itemSet,
-    state: { items: items }
+    state: { items }
   };
 
-  return _react2.default.createElement(
+  return React.createElement(
     Context.Provider,
     { value: store },
     props.children
   );
 };
 
-var connectProvider = function connectProvider(Component) {
-  return function (props) {
-    return _react2.default.createElement(
-      Provider,
-      null,
-      _react2.default.createElement(
-        Context.Consumer,
-        null,
-        function (store) {
-          return _react2.default.createElement(Component, _extends({}, props, { store: store }));
-        }
-      )
-    );
-  };
-};
-
-var connectConsumer = function connectConsumer(Component) {
-  return function (props) {
-    return _react2.default.createElement(
+const connectProvider = Component => {
+  return props => React.createElement(
+    Provider,
+    null,
+    React.createElement(
       Context.Consumer,
       null,
-      function (store) {
-        return _react2.default.createElement(Component, _extends({}, props, { store: store }));
-      }
-    );
-  };
+      store => React.createElement(Component, _extends({}, props, { store: store }))
+    )
+  );
+};
+
+const connectConsumer = Component => {
+  return props => React.createElement(
+    Context.Consumer,
+    null,
+    store => React.createElement(Component, _extends({}, props, { store: store }))
+  );
 };
 
 module.exports = {

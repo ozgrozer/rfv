@@ -198,7 +198,8 @@ const Provider = (props) => {
               items[key].className = 'is-invalid'
             })
 
-            setItems(items)
+            const newItems = Object.assign({}, items)
+            setItems(newItems)
           }
 
           if (opts.postSubmit) {
