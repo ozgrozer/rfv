@@ -58,7 +58,7 @@ const App = () => {
 
   const postOptions = {
     method: 'post',
-    url: 'https://rfv-demo-backend-kb3ppjk4g0ol.runkit.sh/signup'
+    url: 'https://rfv-demo-backend-kb3ppjk4g0ol.runkit.sh/test'
   }
 
   return (
