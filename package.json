@@ -1,6 +1,6 @@
 {
   "name": "rfv",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "React Form Validator",
   "main": "./build/Rfv.js",
   "repository": {
@@ -24,7 +24,7 @@
     "build": "babel --plugins transform-react-jsx ./src/Rfv.jsx > ./build/Rfv.js"
   },
   "license": "MIT",
-  "dependencies": {
+  "peerDependencies": {
     "axios": "^0.19.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
