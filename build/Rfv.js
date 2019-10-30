@@ -46,7 +46,7 @@ const Item = props => {
       formElement = React.createElement('input', _extends({}, htmlProps, {
         value: thisItem.value,
         className: itemClassName,
-        checked: thisItem.value === 'on' || false,
+        checked: thisItem.value === 'on',
         onChange: e => store.itemOnChange({ props, e, onChange }) }));
     } else {
       formElement = React.createElement('input', _extends({}, htmlProps, {
@@ -237,7 +237,9 @@ const Provider = props => {
   const itemInitialize = item => {
     let itemValue = item.value || '';
     if (item.opts.element === 'input' && item.opts.type === 'checkbox') {
-      itemValue = item.checked ? 'on' : 'off';
+      if (Object.prototype.hasOwnProperty.call(item, 'checked')) {
+        itemValue = item.checked ? 'on' : 'off';
+      }
     }
 
     items[item.name] = {
@@ -246,7 +248,9 @@ const Provider = props => {
     };
 
     setInterestingBug(itemValue);
-    setItems(items);
+
+    const newItems = Object.assign({}, items);
+    setItems(newItems);
 
     if (formIsValidating) formValidate();
   };

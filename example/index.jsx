@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 
 import { Form, Input, Select, Textarea } from './../src/Rfv'
@@ -40,6 +40,18 @@ const validations = {
 }
 
 const App = () => {
+  const [checked, setChecked] = useState('off')
+  useEffect(() => {
+    setTimeout(() => {
+      setChecked('on')
+      console.log('checked')
+    }, 2000)
+    setTimeout(() => {
+      setChecked('off')
+      console.log('unchecked')
+    }, 4000)
+  }, [])
+
   const preSubmit = (res) => {
     console.log('preSubmit', res)
   }
@@ -85,9 +97,9 @@ const App = () => {
 
       <div>
         <Input
-          checked
           type='checkbox'
           id='rememberMe'
+          value={checked}
           name='rememberMe'
           validations={validations.rememberMe} />
         <label htmlFor='rememberMe'>
