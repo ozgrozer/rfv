@@ -206,15 +206,18 @@ Callbacks
 ```jsx
 <Form
   preSubmit={(res) => {
+    // res.e
     // res.items
     // res.setItems({})
   }}
   onSubmit={(res) => {
+    // res.e
     // res.items
     // res.isFormValid
     // res.setItems({})
   }}
   postSubmit={(res) => {
+    // res.e
     // res.data
     // res.error
     // res.items

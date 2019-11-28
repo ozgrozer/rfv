@@ -165,6 +165,7 @@ const Provider = props => {
 
     if (opts.preSubmit) {
       opts.preSubmit({
+        e,
         setItems: itemSet,
         items: itemsAndValues()
       });
@@ -176,6 +177,7 @@ const Provider = props => {
 
     if (opts.onSubmit) {
       opts.onSubmit({
+        e,
         setItems: itemSet,
         items: itemsAndValues(),
         isFormValid: isFormValid
@@ -203,6 +205,7 @@ const Provider = props => {
 
         if (opts.postSubmit) {
           opts.postSubmit({
+            e,
             isFormValid,
             data: res.data,
             setItems: itemSet,
