@@ -52,15 +52,15 @@ const App = () => {
     }, 4000)
   }, [])
 
-  const preSubmit = (res) => {
+  const preSubmit = res => {
     console.log('preSubmit', res)
   }
 
-  const onSubmit = (res) => {
+  const onSubmit = res => {
     console.log('onSubmit', res)
   }
 
-  const postSubmit = (res) => {
+  const postSubmit = res => {
     console.log('postSubmit', res)
 
     if (res.data.success) {
@@ -78,7 +78,8 @@ const App = () => {
       preSubmit={preSubmit}
       onSubmit={onSubmit}
       postSubmit={postSubmit}
-      postOptions={postOptions}>
+      postOptions={postOptions}
+    >
       <h2>Demo Form</h2>
 
       <div>Type "john" into username to see the backend error.</div>
@@ -90,7 +91,8 @@ const App = () => {
           type='text'
           name='username'
           placeholder='Username'
-          validations={validations.username} />
+          validations={validations.username}
+        />
       </div>
 
       <br />
@@ -101,7 +103,8 @@ const App = () => {
           id='rememberMe'
           value={checked}
           name='rememberMe'
-          validations={validations.rememberMe} />
+          validations={validations.rememberMe}
+        />
         <label htmlFor='rememberMe'>
           Remember me
         </label>
@@ -112,7 +115,8 @@ const App = () => {
       <div>
         <Select
           name='yesOrNo'
-          validations={validations.yesOrNo}>
+          validations={validations.yesOrNo}
+        >
           <option value=''>Select an option</option>
           <option value='yes'>yes</option>
           <option value='no'>no</option>
@@ -125,7 +129,8 @@ const App = () => {
         <Textarea
           name='message'
           placeholder='Message'
-          validations={validations.message} />
+          validations={validations.message}
+        />
       </div>
 
       <br />
