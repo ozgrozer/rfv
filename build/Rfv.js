@@ -6,7 +6,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import validator from 'validator';
 import axios from 'axios';
 
-const Form = props => {
+const _Form = props => {
   const { runValidation, preSubmit, onSubmit, postSubmit, postOptions, store } = props,
         htmlProps = _objectWithoutProperties(props, ['runValidation', 'preSubmit', 'onSubmit', 'postSubmit', 'postOptions', 'store']);
 
@@ -19,7 +19,8 @@ const Form = props => {
     _extends({
       noValidate: true
     }, htmlProps, {
-      onSubmit: e => store.formOnSubmit({ preSubmit, onSubmit, postSubmit, postOptions }, e) }),
+      onSubmit: e => store.formOnSubmit({ preSubmit, onSubmit, postSubmit, postOptions }, e)
+    }),
     props.children
   );
 };
@@ -47,25 +48,29 @@ const Item = props => {
         value: thisItem.value,
         className: itemClassName,
         checked: thisItem.value === 'on',
-        onChange: e => store.itemOnChange({ props, e, onChange }) }));
+        onChange: e => store.itemOnChange({ props, e, onChange })
+      }));
     } else {
       formElement = React.createElement('input', _extends({}, htmlProps, {
         value: thisItem.value,
         className: itemClassName,
-        onChange: e => store.itemOnChange({ props, e, onChange }) }));
+        onChange: e => store.itemOnChange({ props, e, onChange })
+      }));
     }
   } else if (opts.element === 'textarea') {
     formElement = React.createElement('textarea', _extends({}, htmlProps, {
       value: thisItem.value,
       className: itemClassName,
-      onChange: e => store.itemOnChange({ props, e, onChange }) }));
+      onChange: e => store.itemOnChange({ props, e, onChange })
+    }));
   } else if (opts.element === 'select') {
     formElement = React.createElement(
       'select',
       _extends({}, htmlProps, {
         value: thisItem.value,
         className: itemClassName,
-        onChange: e => store.itemOnChange({ props, e, onChange }) }),
+        onChange: e => store.itemOnChange({ props, e, onChange })
+      }),
       props.children
     );
   }
@@ -82,9 +87,9 @@ const Item = props => {
   );
 };
 
-const Input = props => React.createElement(Item, _extends({}, props, { opts: { element: 'input', type: props.type } }));
-const Textarea = props => React.createElement(Item, _extends({}, props, { opts: { element: 'textarea' } }));
-const Select = props => React.createElement(Item, _extends({}, props, { opts: { element: 'select' } }));
+const _Input = props => React.createElement(Item, _extends({}, props, { opts: { element: 'input', type: props.type } }));
+const _Textarea = props => React.createElement(Item, _extends({}, props, { opts: { element: 'textarea' } }));
+const _Select = props => React.createElement(Item, _extends({}, props, { opts: { element: 'select' } }));
 
 const Context = React.createContext();
 
@@ -281,7 +286,7 @@ const Provider = props => {
         itemKeys.map(key => {
           const item = items[key];
 
-          if (opts.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(opts, key)) {
             item.value = opts[key];
           }
         });
@@ -341,10 +346,10 @@ const connectConsumer = Component => {
   );
 };
 
-module.exports = {
-  Form: connectProvider(Form),
-  Input: connectConsumer(Input),
-  Textarea: connectConsumer(Textarea),
-  Select: connectConsumer(Select)
-};
+const Form = connectProvider(_Form);
+const Input = connectConsumer(_Input);
+const Textarea = connectConsumer(_Textarea);
+const Select = connectConsumer(_Select);
+
+export { Form, Input, Textarea, Select };
 

@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import validator from 'validator'
 import axios from 'axios'
 
-const Form = (props) => {
+const _Form = props => {
   const { runValidation, preSubmit, onSubmit, postSubmit, postOptions, store, ...htmlProps } = props
 
   useEffect(() => {
@@ -13,13 +13,14 @@ const Form = (props) => {
     <form
       noValidate
       {...htmlProps}
-      onSubmit={(e) => store.formOnSubmit({ preSubmit, onSubmit, postSubmit, postOptions }, e)}>
+      onSubmit={(e) => store.formOnSubmit({ preSubmit, onSubmit, postSubmit, postOptions }, e)}
+    >
       {props.children}
     </form>
   )
 }
 
-const Item = (props) => {
+const Item = props => {
   const { opts, store, validations, className, onChange, ...htmlProps } = props
 
   useEffect(() => {
@@ -43,7 +44,8 @@ const Item = (props) => {
           value={thisItem.value}
           className={itemClassName}
           checked={thisItem.value === 'on'}
-          onChange={e => store.itemOnChange({ props, e, onChange })} />
+          onChange={e => store.itemOnChange({ props, e, onChange })}
+        />
       )
     } else {
       formElement = (
@@ -51,7 +53,8 @@ const Item = (props) => {
           {...htmlProps}
           value={thisItem.value}
           className={itemClassName}
-          onChange={e => store.itemOnChange({ props, e, onChange })} />
+          onChange={e => store.itemOnChange({ props, e, onChange })}
+        />
       )
     }
   } else if (opts.element === 'textarea') {
@@ -60,7 +63,8 @@ const Item = (props) => {
         {...htmlProps}
         value={thisItem.value}
         className={itemClassName}
-        onChange={e => store.itemOnChange({ props, e, onChange })} />
+        onChange={e => store.itemOnChange({ props, e, onChange })}
+      />
     )
   } else if (opts.element === 'select') {
     formElement = (
@@ -68,7 +72,8 @@ const Item = (props) => {
         {...htmlProps}
         value={thisItem.value}
         className={itemClassName}
-        onChange={e => store.itemOnChange({ props, e, onChange })}>
+        onChange={e => store.itemOnChange({ props, e, onChange })}
+      >
         {props.children}
       </select>
     )
@@ -82,18 +87,18 @@ const Item = (props) => {
   )
 }
 
-const Input = (props) => <Item {...props} opts={{ element: 'input', type: props.type }} />
-const Textarea = (props) => <Item {...props} opts={{ element: 'textarea' }} />
-const Select = (props) => <Item {...props} opts={{ element: 'select' }} />
+const _Input = props => <Item {...props} opts={{ element: 'input', type: props.type }} />
+const _Textarea = props => <Item {...props} opts={{ element: 'textarea' }} />
+const _Select = props => <Item {...props} opts={{ element: 'select' }} />
 
 const Context = React.createContext()
 
-const Provider = (props) => {
+const Provider = props => {
   const [items, setItems] = useState({})
   const [interestingBug, setInterestingBug] = useState('')
   const [formIsValidating, setFormIsValidating] = useState(false)
 
-  const itemValidate = (opts) => {
+  const itemValidate = opts => {
     const item = items[opts.name]
 
     item.validations.map((itemValidation, i) => {
@@ -116,7 +121,7 @@ const Provider = (props) => {
   }
 
   const formUnvalidate = () => {
-    Object.keys(items).map((key) => {
+    Object.keys(items).map(key => {
       const item = items[key]
       item.className = ''
     })
@@ -127,7 +132,7 @@ const Provider = (props) => {
     let howManyItemsValidated = 0
     let howManyItemsAreGonnaValidate = 0
 
-    Object.keys(items).map((key) => {
+    Object.keys(items).map(key => {
       const item = items[key]
 
       item.validations.map((itemValidation, i) => {
@@ -187,7 +192,7 @@ const Provider = (props) => {
     if (isFormValid && opts.postOptions) {
       opts.postOptions.data = itemsAndValues()
 
-      axios({...opts.postOptions})
+      axios({ ...opts.postOptions })
         .then((res) => {
           const validations = res.data.validations || {}
 
@@ -195,7 +200,7 @@ const Provider = (props) => {
           if (Object.keys(validations).length) {
             isPostSubmitFormValid = false
 
-            Object.keys(validations).map((key) => {
+            Object.keys(validations).map(key => {
               items[key].invalidFeedback = validations[key]
               items[key].className = 'is-invalid'
             })
@@ -215,7 +220,7 @@ const Provider = (props) => {
             })
           }
         })
-        .catch((err) => {
+        .catch(err => {
           if (opts.postSubmit) {
             opts.postSubmit({
               error: err,
@@ -231,7 +236,7 @@ const Provider = (props) => {
   const itemsAndValues = () => {
     const data = {}
 
-    Object.keys(items).map((key) => {
+    Object.keys(items).map(key => {
       const item = items[key]
       data[key] = item.value
     })
@@ -239,7 +244,7 @@ const Provider = (props) => {
     return data
   }
 
-  const itemInitialize = (item) => {
+  const itemInitialize = item => {
     let itemValue = item.value || ''
     if (item.opts.element === 'input' && item.opts.type === 'checkbox') {
       if (Object.prototype.hasOwnProperty.call(item, 'checked')) {
@@ -260,7 +265,7 @@ const Provider = (props) => {
     if (formIsValidating) formValidate()
   }
 
-  const itemOnChange = (opts) => {
+  const itemOnChange = opts => {
     const item = {
       ...opts.props,
       checked: opts.e.target.checked,
@@ -275,21 +280,21 @@ const Provider = (props) => {
     }
   }
 
-  const itemSet = (opts) => {
+  const itemSet = opts => {
     if (opts) {
       const optsKeys = Object.keys(opts)
       const itemKeys = Object.keys(items)
 
       if (optsKeys.length) {
-        itemKeys.map((key) => {
+        itemKeys.map(key => {
           const item = items[key]
 
-          if (opts.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(opts, key)) {
             item.value = opts[key]
           }
         })
       } else {
-        itemKeys.map((key) => {
+        itemKeys.map(key => {
           const item = items[key]
           item.value = ''
         })
@@ -299,7 +304,7 @@ const Provider = (props) => {
     }
   }
 
-  const runValidation = (trueFalse) => {
+  const runValidation = trueFalse => {
     setFormIsValidating(trueFalse)
     if (trueFalse) {
       formValidate()
@@ -324,8 +329,8 @@ const Provider = (props) => {
   )
 }
 
-const connectProvider = (Component) => {
-  return (props) => (
+const connectProvider = Component => {
+  return props => (
     <Provider>
       <Context.Consumer>
         {(store) => <Component {...props} store={store} />}
@@ -334,17 +339,22 @@ const connectProvider = (Component) => {
   )
 }
 
-const connectConsumer = (Component) => {
-  return (props) => (
+const connectConsumer = Component => {
+  return props => (
     <Context.Consumer>
       {(store) => <Component {...props} store={store} />}
     </Context.Consumer>
   )
 }
 
-module.exports = {
-  Form: connectProvider(Form),
-  Input: connectConsumer(Input),
-  Textarea: connectConsumer(Textarea),
-  Select: connectConsumer(Select)
+const Form = connectProvider(_Form)
+const Input = connectConsumer(_Input)
+const Textarea = connectConsumer(_Textarea)
+const Select = connectConsumer(_Select)
+
+export {
+  Form,
+  Input,
+  Textarea,
+  Select
 }
