@@ -27,6 +27,10 @@ const Item = props => {
     store.itemInitialize(props)
   }, [props.value])
 
+  useEffect(() => {
+    store.itemInitialize({ ...props, action: 'validations' })
+  }, [validations])
+
   const thisItem = store.state.items[props.name] || {
     value: '',
     className: '',
@@ -246,15 +250,24 @@ const Provider = props => {
 
   const itemInitialize = item => {
     let itemValue = item.value || ''
+    if (Object.prototype.hasOwnProperty.call(items, item.name)) {
+      if (Object.prototype.hasOwnProperty.call(items[item.name], 'value')) {
+        if (item.action === 'validations') {
+          itemValue = items[item.name].value
+        }
+      }
+    }
     if (item.opts.element === 'input' && item.opts.type === 'checkbox') {
       if (Object.prototype.hasOwnProperty.call(item, 'checked')) {
         itemValue = item.checked ? 'on' : 'off'
       }
     }
 
+    const itemValidations = item.validations || []
+
     items[item.name] = {
       value: itemValue,
-      validations: item.validations || []
+      validations: itemValidations
     }
 
     setInterestingBug(itemValue)

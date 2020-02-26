@@ -23,6 +23,13 @@ const validations = {
       invalidFeedback: 'Please check'
     }
   ],
+  dynamicValidation: [
+    {
+      rule: 'isLength',
+      args: { min: 1 },
+      invalidFeedback: 'Please provide a value'
+    }
+  ],
   yesOrNo: [
     {
       rule: 'isLength',
@@ -41,16 +48,11 @@ const validations = {
 
 const App = () => {
   const [checked, setChecked] = useState('off')
-  useEffect(() => {
-    setTimeout(() => {
-      setChecked('on')
-      console.log('checked')
-    }, 2000)
-    setTimeout(() => {
-      setChecked('off')
-      console.log('unchecked')
-    }, 4000)
-  }, [])
+
+  const rememberMeOnChange = () => {
+    const newValue = checked === 'on' ? 'off' : 'on'
+    setChecked(newValue)
+  }
 
   const preSubmit = res => {
     console.log('preSubmit', res)
@@ -103,11 +105,23 @@ const App = () => {
           id='rememberMe'
           value={checked}
           name='rememberMe'
+          onChange={rememberMeOnChange}
           validations={validations.rememberMe}
         />
         <label htmlFor='rememberMe'>
           Remember me
         </label>
+      </div>
+
+      <br />
+
+      <div>
+        <Input
+          type='text'
+          name='dynamicValidation'
+          placeholder='Dynamic validation'
+          validations={checked === 'on' ? validations.dynamicValidation : ''}
+        />
       </div>
 
       <br />
