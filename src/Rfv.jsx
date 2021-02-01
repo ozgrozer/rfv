@@ -113,30 +113,32 @@ const Provider = props => {
   const itemValidate = opts => {
     const item = items[opts.name]
 
-    item.validations.map((itemValidation, i) => {
+    for (const key in item.validations) {
+      const itemValidation = item.validations[key]
       const validate = validator[itemValidation.rule](item.value, itemValidation.args)
       if (validate) {
         itemValidation.validated = true
       } else {
         itemValidation.validated = false
       }
-    })
+    }
 
     const unvalidatedItems = []
-    item.validations.map((itemValidation, i) => {
+    for (const key in item.validations) {
+      const itemValidation = item.validations[key]
       if (!itemValidation.validated) {
         unvalidatedItems.push(itemValidation)
       }
-    })
+    }
 
     item.validated = !unvalidatedItems.length || false
   }
 
   const formUnvalidate = () => {
-    Object.keys(items).map(key => {
+    for (const key in items) {
       const item = items[key]
       item.className = ''
-    })
+    }
     setItems(items)
   }
 
@@ -144,10 +146,11 @@ const Provider = props => {
     let howManyItemsValidated = 0
     let howManyItemsAreGonnaValidate = 0
 
-    Object.keys(items).map(key => {
+    for (const key in items) {
       const item = items[key]
 
-      item.validations.map((itemValidation, i) => {
+      for (const key in item.validations) {
+        const itemValidation = item.validations[key]
         howManyItemsAreGonnaValidate++
 
         const validate = validator[itemValidation.rule](item.value, itemValidation.args)
@@ -157,20 +160,21 @@ const Provider = props => {
         } else {
           itemValidation.validated = false
         }
-      })
+      }
 
       const unvalidatedItems = []
-      item.validations.map((itemValidation, i) => {
+      for (const key in item.validations) {
+        const itemValidation = item.validations[key]
         if (!itemValidation.validated) {
           unvalidatedItems.push(itemValidation)
         }
-      })
+      }
 
       if (unvalidatedItems.length) {
         item.invalidFeedback = unvalidatedItems[0].invalidFeedback
         item.className = 'is-invalid'
       }
-    })
+    }
 
     setItems(items)
 
@@ -214,10 +218,11 @@ const Provider = props => {
           if (Object.keys(validations).length) {
             isPostSubmitFormValid = false
 
-            Object.keys(validations).map(key => {
-              items[key].invalidFeedback = validations[key]
+            for (const key in validations) {
+              const validation = validations[key]
+              items[key].invalidFeedback = validation
               items[key].className = 'is-invalid'
-            })
+            }
 
             const newItems = Object.assign({}, items)
             setItems(newItems)
@@ -251,10 +256,10 @@ const Provider = props => {
   const itemsAndValues = () => {
     const data = {}
 
-    Object.keys(items).map(key => {
+    for (const key in items) {
       const item = items[key]
       data[key] = item.value
-    })
+    }
 
     return data
   }
@@ -319,18 +324,18 @@ const Provider = props => {
       const itemKeys = Object.keys(items)
 
       if (optsKeys.length) {
-        itemKeys.map(key => {
+        for (const key in itemKeys) {
           const item = items[key]
 
           if (Object.prototype.hasOwnProperty.call(opts, key)) {
             item.value = opts[key]
           }
-        })
+        }
       } else {
-        itemKeys.map(key => {
+        for (const key in itemKeys) {
           const item = items[key]
           item.value = ''
-        })
+        }
       }
 
       setItems(items)
@@ -367,7 +372,7 @@ const connectProvider = Component => {
   return props => (
     <Provider>
       <Context.Consumer>
-        {(store) => <Component {...props} store={store} />}
+        {store => <Component {...props} store={store} />}
       </Context.Consumer>
     </Provider>
   )
@@ -376,7 +381,7 @@ const connectProvider = Component => {
 const connectConsumer = Component => {
   return props => (
     <Context.Consumer>
-      {(store) => <Component {...props} store={store} />}
+      {store => <Component {...props} store={store} />}
     </Context.Consumer>
   )
 }
