@@ -1,3 +1,5 @@
+/* eslint react/jsx-fragments: 0 */
+
 import React, { Fragment, useEffect, useState } from 'react'
 import validator from 'validator'
 import axios from 'axios'
