@@ -5,11 +5,17 @@ import validator from 'validator'
 import axios from 'axios'
 
 const _Form = props => {
-  const { runValidation, preSubmit, onSubmit, postSubmit, postOptions, store, ...htmlProps } = props
+  const { runValidation, preSubmit, onSubmit, postSubmit, removeItems, postOptions, store, ...htmlProps } = props
 
   useEffect(() => {
     store.runValidation(runValidation)
   }, [runValidation])
+
+  useEffect(() => {
+    if (typeof removeItems !== 'undefined' && removeItems.length) {
+      store.removeItems(removeItems)
+    }
+  }, [removeItems])
 
   return (
     <form
@@ -177,6 +183,7 @@ const Provider = props => {
     if (opts.preSubmit) {
       opts.preSubmit({
         e,
+        removeItems,
         setItems: itemSet,
         items: itemsAndValues()
       })
@@ -189,6 +196,7 @@ const Provider = props => {
     if (opts.onSubmit) {
       opts.onSubmit({
         e,
+        removeItems,
         setItems: itemSet,
         items: itemsAndValues(),
         isFormValid: isFormValid
@@ -218,6 +226,7 @@ const Provider = props => {
           if (opts.postSubmit) {
             opts.postSubmit({
               e,
+              removeItems,
               isFormValid,
               data: res.data,
               setItems: itemSet,
@@ -295,6 +304,15 @@ const Provider = props => {
     }
   }
 
+  const removeItems = itemsToRemove => {
+    for (const key in items) {
+      if (itemsToRemove.indexOf(key) !== -1) {
+        delete items[key]
+      }
+    }
+    setItems({ ...items })
+  }
+
   const itemSet = opts => {
     if (opts) {
       const optsKeys = Object.keys(opts)
@@ -333,6 +351,7 @@ const Provider = props => {
     itemInitialize,
     itemOnChange,
     runValidation,
+    removeItems,
     setItems: itemSet,
     state: { items }
   }
