@@ -57,7 +57,7 @@ const validations = {
 
 const App = () => {
   // Learn the status of validation with `res.isFormValid` and get your form data as an object with `res.items` to make an AJAX request or something else
-  const onSubmit = (res) => {
+  const onSubmit = res => {
     if (res.isFormValid) {
       post('url', res.items)
     }
@@ -119,7 +119,7 @@ const validations = {
 
 const App = () => {
   // After an AJAX call, call the `res.data` to get the backend results
-  const postSubmit = (res) => {
+  const postSubmit = res => {
     console.log(res.data)
   }
 
@@ -211,18 +211,19 @@ Callbacks
 
 ```jsx
 <Form
-  preSubmit={(res) => {
+  removeItems={['key1', 'key2']}
+  preSubmit={res => {
     // res.e
     // res.items
     // res.setItems({})
   }}
-  onSubmit={(res) => {
+  onSubmit={res => {
     // res.e
     // res.items
     // res.isFormValid
     // res.setItems({})
   }}
-  postSubmit={(res) => {
+  postSubmit={res => {
     // res.e
     // res.data
     // res.error
@@ -260,7 +261,7 @@ Callbacks
 
 ```jsx
 <Input
-  onChange={(res) => {
+  onChange={res => {
     // res.e
     // res.validated
   }}

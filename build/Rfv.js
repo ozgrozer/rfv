@@ -2,17 +2,25 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
+/* eslint react/jsx-fragments: 0 */
+
 import React, { Fragment, useEffect, useState } from 'react';
 import validator from 'validator';
 import axios from 'axios';
 
 const _Form = props => {
-  const { runValidation, preSubmit, onSubmit, postSubmit, postOptions, store } = props,
-        htmlProps = _objectWithoutProperties(props, ['runValidation', 'preSubmit', 'onSubmit', 'postSubmit', 'postOptions', 'store']);
+  const { runValidation, preSubmit, onSubmit, postSubmit, removeItems, postOptions, store } = props,
+        htmlProps = _objectWithoutProperties(props, ['runValidation', 'preSubmit', 'onSubmit', 'postSubmit', 'removeItems', 'postOptions', 'store']);
 
   useEffect(() => {
     store.runValidation(runValidation);
   }, [runValidation]);
+
+  useEffect(() => {
+    if (typeof removeItems !== 'undefined' && removeItems.length) {
+      store.removeItems(removeItems);
+    }
+  }, [removeItems]);
 
   return React.createElement(
     'form',
@@ -105,30 +113,32 @@ const Provider = props => {
   const itemValidate = opts => {
     const item = items[opts.name];
 
-    item.validations.map((itemValidation, i) => {
+    for (const key in item.validations) {
+      const itemValidation = item.validations[key];
       const validate = validator[itemValidation.rule](item.value, itemValidation.args);
       if (validate) {
         itemValidation.validated = true;
       } else {
         itemValidation.validated = false;
       }
-    });
+    }
 
     const unvalidatedItems = [];
-    item.validations.map((itemValidation, i) => {
+    for (const key in item.validations) {
+      const itemValidation = item.validations[key];
       if (!itemValidation.validated) {
         unvalidatedItems.push(itemValidation);
       }
-    });
+    }
 
     item.validated = !unvalidatedItems.length || false;
   };
 
   const formUnvalidate = () => {
-    Object.keys(items).map(key => {
+    for (const key in items) {
       const item = items[key];
       item.className = '';
-    });
+    }
     setItems(items);
   };
 
@@ -136,10 +146,11 @@ const Provider = props => {
     let howManyItemsValidated = 0;
     let howManyItemsAreGonnaValidate = 0;
 
-    Object.keys(items).map(key => {
+    for (const key in items) {
       const item = items[key];
 
-      item.validations.map((itemValidation, i) => {
+      for (const key in item.validations) {
+        const itemValidation = item.validations[key];
         howManyItemsAreGonnaValidate++;
 
         const validate = validator[itemValidation.rule](item.value, itemValidation.args);
@@ -149,20 +160,21 @@ const Provider = props => {
         } else {
           itemValidation.validated = false;
         }
-      });
+      }
 
       const unvalidatedItems = [];
-      item.validations.map((itemValidation, i) => {
+      for (const key in item.validations) {
+        const itemValidation = item.validations[key];
         if (!itemValidation.validated) {
           unvalidatedItems.push(itemValidation);
         }
-      });
+      }
 
       if (unvalidatedItems.length) {
         item.invalidFeedback = unvalidatedItems[0].invalidFeedback;
         item.className = 'is-invalid';
       }
-    });
+    }
 
     setItems(items);
 
@@ -175,6 +187,7 @@ const Provider = props => {
     if (opts.preSubmit) {
       opts.preSubmit({
         e,
+        removeItems,
         setItems: itemSet,
         items: itemsAndValues()
       });
@@ -187,6 +200,7 @@ const Provider = props => {
     if (opts.onSubmit) {
       opts.onSubmit({
         e,
+        removeItems,
         setItems: itemSet,
         items: itemsAndValues(),
         isFormValid: isFormValid
@@ -203,10 +217,11 @@ const Provider = props => {
         if (Object.keys(validations).length) {
           isPostSubmitFormValid = false;
 
-          Object.keys(validations).map(key => {
-            items[key].invalidFeedback = validations[key];
+          for (const key in validations) {
+            const validation = validations[key];
+            items[key].invalidFeedback = validation;
             items[key].className = 'is-invalid';
-          });
+          }
 
           const newItems = Object.assign({}, items);
           setItems(newItems);
@@ -215,6 +230,7 @@ const Provider = props => {
         if (opts.postSubmit) {
           opts.postSubmit({
             e,
+            removeItems,
             isFormValid,
             data: res.data,
             setItems: itemSet,
@@ -238,10 +254,10 @@ const Provider = props => {
   const itemsAndValues = () => {
     const data = {};
 
-    Object.keys(items).map(key => {
+    for (const key in items) {
       const item = items[key];
       data[key] = item.value;
-    });
+    }
 
     return data;
   };
@@ -290,24 +306,33 @@ const Provider = props => {
     }
   };
 
+  const removeItems = itemsToRemove => {
+    for (const key in items) {
+      if (itemsToRemove.indexOf(key) !== -1) {
+        delete items[key];
+      }
+    }
+    setItems(_extends({}, items));
+  };
+
   const itemSet = opts => {
     if (opts) {
       const optsKeys = Object.keys(opts);
       const itemKeys = Object.keys(items);
 
       if (optsKeys.length) {
-        itemKeys.map(key => {
+        for (const key in itemKeys) {
           const item = items[key];
 
           if (Object.prototype.hasOwnProperty.call(opts, key)) {
             item.value = opts[key];
           }
-        });
+        }
       } else {
-        itemKeys.map(key => {
+        for (const key in itemKeys) {
           const item = items[key];
           item.value = '';
-        });
+        }
       }
 
       setItems(items);
@@ -328,6 +353,7 @@ const Provider = props => {
     itemInitialize,
     itemOnChange,
     runValidation,
+    removeItems,
     setItems: itemSet,
     state: { items }
   };
