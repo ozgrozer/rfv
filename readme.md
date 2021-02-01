@@ -70,13 +70,15 @@ const App = () => {
         <Input
           type='email'
           name='email'
-          validations={validations.email} />
+          validations={validations.email}
+        />
       </div>
 
       <div>
         <Textarea
           name='message'
-          validations={validations.message} />
+          validations={validations.message}
+        />
       </div>
 
       <div>
@@ -125,18 +127,21 @@ const App = () => {
     // Build your form
     <Form
       postSubmit={postSubmit}
-      postOptions={{ method: 'post', url: 'url' }}>
+      postOptions={{ method: 'post', url: 'url' }}
+    >
       <div>
         <Input
           type='email'
           name='email'
-          validations={validations.email} />
+          validations={validations.email}
+        />
       </div>
 
       <div>
         <Textarea
           name='message'
-          validations={validations.message} />
+          validations={validations.message}
+        />
       </div>
 
       <div>
@@ -198,7 +203,8 @@ Props
     headers: {
       'Authorization': 'Token ...'
     }
-  }}>
+  }}
+>
 ```
 
 Callbacks
@@ -224,7 +230,8 @@ Callbacks
     // res.isFormValid
     // res.setItems({})
     // res.isPostSubmitFormValid
-  }}>
+  }}
+>
 ```
 
 `<Input>`, `<Select>`, `<Textarea>`
@@ -245,7 +252,8 @@ Props
       args: { min: 4, max: 32 },
       invalidFeedback: 'Username must be minimum 4, maximum 32 characters'
     }
-  ]} />
+  ]}
+/>
 ```
 
 Callbacks
@@ -255,7 +263,8 @@ Callbacks
   onChange={(res) => {
     // res.e
     // res.validated
-  }} />
+  }}
+/>
 ```
 
 ## Contribution
