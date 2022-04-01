@@ -1,7 +1,8 @@
-.DS_Store
 .cache
-node_modules
 *.log
+/dist
+.DS_Store
+node_modules
+.parcel-cache
 *.sublime-project
 *.sublime-workspace
-/dist

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
+import { useState } from 'react'
+import ReactDOM from 'react-dom/client'
 
 import { Form, Input, Select, Textarea } from './../src/Rfv'
 
@@ -154,4 +154,4 @@ const App = () => {
   )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.createRoot(document.getElementById('root')).render(<App />)
