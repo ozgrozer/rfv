@@ -325,10 +325,11 @@ const Provider = props => {
 
       if (optsKeys.length) {
         for (const key in itemKeys) {
-          const item = items[key]
+          const itemKey = itemKeys[key]
+          const item = items[itemKey]
 
-          if (Object.prototype.hasOwnProperty.call(opts, key)) {
-            item.value = opts[key]
+          if (Object.prototype.hasOwnProperty.call(opts, itemKey)) {
+            item.value = opts[itemKey]
           }
         }
       } else {
@@ -339,7 +340,7 @@ const Provider = props => {
         }
       }
 
-      setItems(items)
+      setItems({ ...items })
     }
   }
 
