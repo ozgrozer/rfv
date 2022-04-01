@@ -333,7 +333,8 @@ const Provider = props => {
         }
       } else {
         for (const key in itemKeys) {
-          const item = items[key]
+          const itemKey = itemKeys[key]
+          const item = items[itemKey]
           item.value = ''
         }
       }
